@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/StrongerProgrammer7/Interaction_with_patients#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "browserify": "^17.0.0",
     "dotenv": "^16.0.3",
@@ -36,12 +37,14 @@
     "ganache": "^7.7.7",
     "ipfs-core": "^0.18.0",
     "ipfs-http-client": "^60.0.0",
-    "mysql": "^2.18.1",
     "node-abort-controller": "^3.1.1",
+    "uuid": "^9.0.0",
     "web3": "^1.9.0",
     "web3-eth": "^1.9.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "mysql2": "^3.2.0",
+    "nodemon": "^2.0.22",
+    "sequelize": "^6.30.0"
   }
 }
