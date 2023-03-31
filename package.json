@@ -1,0 +1,46 @@
+{
+  "name": "interaction_with_patients",
+  "version": "1.0.1",
+  "description": "Interaction patients with doctor throught DB MySQL and Smart contract Ethereum. Contract include only get access doc and annual access. DB include all other.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StrongerProgrammer7/Interaction_with_patients.git"
+  },
+  "keywords": [
+    "nodejs",
+    "js",
+    "html",
+    "css",
+    "ethereum",
+    "web3",
+    "mysql"
+  ],
+  "author": "Abduykov Z.M.",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/StrongerProgrammer7/Interaction_with_patients/issues"
+  },
+  "homepage": "https://github.com/StrongerProgrammer7/Interaction_with_patients#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "browserify": "^17.0.0",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.9",
+    "ejs-mate": "^4.0.0",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "ganache": "^7.7.7",
+    "ipfs-core": "^0.18.0",
+    "ipfs-http-client": "^60.0.0",
+    "node-abort-controller": "^3.1.1",
+    "web3": "^1.9.0",
+    "web3-eth": "^1.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
