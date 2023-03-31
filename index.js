@@ -21,7 +21,10 @@
         await mysql.connect(function(error)
         {
             if(error)
-                console.log('Unable to connect to the db: ',error);   
+            {
+                console.log('Unable to connect to the db: ',error); 
+                return console.error(error.message);
+            }
             else
                 console.log('Connection has been established successfully.'); 
         });
@@ -35,3 +38,11 @@
  }
 
  startServer();
+
+//   // закрытие подключения
+//   mysql.end(function(err) {
+//     if (err) {
+//       return console.log("Ошибка: " + err.message);
+//     }
+//     console.log("Подключение закрыто");
+//   });
