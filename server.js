@@ -5,18 +5,20 @@
  const bodyParser = require('body-parser');
  const fileUpload = require('express-fileupload');
  const dotenv = require('dotenv').config();
- const pages = require('./routers/');
- const controller = require('./controller/');
+ const pages = require('./routers/authRouters');
+ const controller = require('./controller/auth');
+
 
  const PORT = process.env.PORT || 3000;
 
- const app = express();
-
+const app = express();
+app.use(express.json());
 app.use("/css",express.static(__dirname + "/public/css"));
 app.use("/js",express.static(__dirname + "/public/js"));
 app.use("/utils", express.static(__dirname + "/public/utils"));
 app.use("/image",express.static(__dirname + "/public/image"));
-
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(fileUpload());
 app.engine('ejs',require('ejs-mate'));
 app.set("view engine",'ejs');
 app.set("views","./views");
@@ -40,7 +42,7 @@ app.use('/api',controller);
                 console.log('Connection has been established successfully.'); 
         });
 
-        app.listen(PORT,() => console.log(`Server has been started on the port ${process.env.PORT} and env=${process.env.NODE_ENV}` ));    
+        app.listen(PORT,() => console.log(`Server has been started on the port ${PORT} and env=${process.env.NODE_ENV}` ));    
     } catch (error) 
     {
         console.log(error);

@@ -2,9 +2,9 @@
   "name": "interaction_with_patients",
   "version": "1.0.1",
   "description": "Interaction patients with doctor throught DB MySQL and Smart contract Ethereum. Contract include only get access doc and annual access. DB include all other.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node ./index.js"
+    "start": "nodemon ./server.js"
   },
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
     "express-fileupload": "^1.4.0",
     "ganache": "^7.7.7",
     "ipfs-core": "^0.18.0",
-    "ipfs-http-client": "^60.0.0",
+    "ipfs-http-client": "^50.1.2",
     "node-abort-controller": "^3.1.1",
     "uuid": "^9.0.0",
     "web3": "^1.9.0",
