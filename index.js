@@ -5,13 +5,24 @@
  const bodyParser = require('body-parser');
  const fileUpload = require('express-fileupload');
  const dotenv = require('dotenv').config();
- //const pages = require('./routers/');
- //const controller = require('./controller/');
+ const pages = require('./routers/');
+ const controller = require('./controller/');
 
  const PORT = process.env.PORT || 3000;
 
  const app = express();
 
+app.use("/css",express.static(__dirname + "/public/css"));
+app.use("/js",express.static(__dirname + "/public/js"));
+app.use("/utils", express.static(__dirname + "/public/utils"));
+app.use("/image",express.static(__dirname + "/public/image"));
+
+app.engine('ejs',require('ejs-mate'));
+app.set("view engine",'ejs');
+app.set("views","./views");
+
+app.use('/',pages);
+app.use('/api',controller);
 
  const startServer = async function()
  {
