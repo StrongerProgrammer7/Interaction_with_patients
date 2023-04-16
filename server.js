@@ -1,15 +1,15 @@
- const express = require('express');
- const mysql = require('./routers/connectionMySQL');
- 
- const path = require('path');
- const bodyParser = require('body-parser');
- const fileUpload = require('express-fileupload');
- const dotenv = require('dotenv').config();
- const pages = require('./routers/authRouters');
- const controller = require('./controller/auth');
+const express = require('express');
+const mysql = require('./routers/connectionMySQL');
 
 
- const PORT = process.env.PORT || 3000;
+const path = require('path');
+const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
+const dotenv = require('dotenv').config();
+const pages = require('./routers/authRouters');
+const controller = require('./controller/auth');
+
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.json());
@@ -25,6 +25,7 @@ app.set("views","./views");
 
 app.use('/',pages);
 app.use('/api',controller);
+
 
  const startServer = async function()
  {
@@ -42,7 +43,8 @@ app.use('/api',controller);
                 console.log('Connection has been established successfully.'); 
         });
 
-        app.listen(PORT,() => console.log(`Server has been started on the port ${PORT} and env=${process.env.NODE_ENV}` ));    
+        app.listen(PORT,() => console.log(`Server has been started on the port ${PORT} and env=${process.env.NODE_ENV}` )); 
+
     } catch (error) 
     {
         console.log(error);
@@ -59,3 +61,4 @@ app.use('/api',controller);
 //     }
 //     console.log("Подключение закрыто");
 //   });
+

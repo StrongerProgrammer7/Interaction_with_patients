@@ -19,8 +19,9 @@ window.addEventListener("DOMContentLoaded",async() =>
         document.getElementById("meta").value = accountUser; 
         try 
         {
-            error.style.display = "none";
+            error.style.display = "none";       
             window.contract = await new window.web3.eth.Contract(ABI,addressContract);
+            //console.log(window.contract._address);
         } catch (error)
         {
             messageError('There is problem with contract, check console!');
@@ -53,12 +54,37 @@ document.getElementById("home").addEventListener("click", function()
     window.open("/",'_self');
 });
 
-
-form.addEventListener("submit", function()
+let hashTx ="";
+form.addEventListener("submit", async function()
 {
-    console.log(setNewDataBase);
+    //console.log(setNewDataBase);
     if(setNewDataBase ===null && setNewDataBase !== 1)
-        registerPatient();
+        {
+            registerPatient();
+            console.log(accountUser);
+            const transaction = [
+                {
+                    from: accountUser,
+                    to: window.contract._address,
+                    gas:'200000',
+                    data: window.contract.methods.createPatient().encodeABI()
+                },
+              ];
+
+            // ethereum.request({
+            //     method: 'eth_signTransaction', transaction,
+            //   }).then((result) => {
+               
+            //     hashTx = result;
+            //     // The result varies by RPC method.
+            //     // For example, this method will return a transaction hash hexadecimal string on success.
+            //   }).catch((error) => 
+            //   {
+            //     console.log(error);
+            //     // If the request fails, the Promise will reject with an error.
+            //   });
+              
+        }
     else
         changeBaseDataPatient();
     
@@ -77,7 +103,8 @@ async function registerPatient()
         addressOfResidence: addressOfResidence.value,
         addressRegistered: addressRegistered.value,
         insurancePolicy: insurancePolicy.value,    
-        meta: accountUser
+        meta: accountUser,
+        hashTx: hashTx
     };
     //Если переместить на бэкэнд сторону
     /*await fetch("/api/register",
@@ -94,6 +121,7 @@ async function registerPatient()
         });*/
     if(checkData(registerData) == true)
     {
+        //TODO:: обернуть внутри транзакции, потом вызов БД
         await fetch("/api/register",
         {
             method: 'POST',
