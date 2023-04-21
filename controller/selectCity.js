@@ -11,7 +11,6 @@ const selectCity = async (req,res,next) =>
         {
             return res.status(300).json({status: false,data: '',error:error});
         }
-        console.log(result[0])
         return res.status(200).json({status:true, data:result[0]});
     })
     .catch((err) => 

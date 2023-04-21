@@ -182,7 +182,7 @@ async function registerPatient()
     {
         await window.contract.methods.createPatient().send({from :accountUser}).then((res) =>
         {
-            console.log(res);
+           // console.log(res);
             window.contract.getPastEvents("allEvents",
             {                               
                 fromBlock: 'latest',     
@@ -335,11 +335,16 @@ function checkData(data)
            return false; 
         }
     }
-    const passReg = new RegExp(/^(?=.*[\d])(?=.*[!@#$%^&*])[\w!@#$%^&*]{6,16}$/);
-    if(passReg.test(data.password) === false || (password_repeat.value === undefined && data.password !== undefined && data.password === password_repeat.value))
+    const passReg = new RegExp(/^(?=.*[\d])(?=.*[!@#$%^&*;\:})({])[\w!@#$%^&*;\:})({]{10,255}$/);
+    if((password_repeat.value !== undefined && data.password !== undefined && data.password === password_repeat.value))
     {
-        return false;
+        if(passReg.test(data.password) === false)
+        {
+            console.log(passReg.test(data.password))
+            return false;
+        }
     }
+    
 
     return true;
 }

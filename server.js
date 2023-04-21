@@ -3,6 +3,7 @@ const express = require('express');
 const mysql = require('./routers/connectionMySQL');
 const contract = require('./routers/deployeContract');
 const path = require('path');
+const fs = require('fs');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const dotenv = require('dotenv').config();
@@ -26,6 +27,12 @@ app.set("views","./views");
 app.use('/',pages);
 app.use('/api',controller);
 
+const optionHTTPS = 
+{
+    key: fs.readFileSync('certificates/key.pem'),
+    cert: fs.readFileSync('certificates/cert.pem')
+}
+
 const startServer = async function()
  {
     try 
@@ -41,7 +48,7 @@ const startServer = async function()
                 console.log('Connection has been established successfully.'); 
         });
 
-        https.createServer(app)
+        https.createServer(optionHTTPS,app)
         .listen(PORT, () =>
         {
             console.log(`Server has been started on the port ${PORT} and env=${process.env.NODE_ENV}` )
