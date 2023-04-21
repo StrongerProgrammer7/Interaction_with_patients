@@ -1,7 +1,7 @@
+const https = require('https');
 const express = require('express');
 const mysql = require('./routers/connectionMySQL');
-
-
+const contract = require('./routers/deployeContract');
 const path = require('path');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
@@ -26,13 +26,11 @@ app.set("views","./views");
 app.use('/',pages);
 app.use('/api',controller);
 
-
- const startServer = async function()
+const startServer = async function()
  {
     try 
     {
-        //await mysql.authenticate();
-        await mysql.connect(function(error)
+        mysql.connect(function(error)
         {
             if(error)
             {
@@ -43,7 +41,12 @@ app.use('/api',controller);
                 console.log('Connection has been established successfully.'); 
         });
 
-        app.listen(PORT,() => console.log(`Server has been started on the port ${PORT} and env=${process.env.NODE_ENV}` )); 
+        https.createServer(app)
+        .listen(PORT, () =>
+        {
+            console.log(`Server has been started on the port ${PORT} and env=${process.env.NODE_ENV}` )
+        })
+        //app.listen(PORT,() => console.log(`Server has been started on the port ${PORT} and env=${process.env.NODE_ENV}` )); 
 
     } catch (error) 
     {
