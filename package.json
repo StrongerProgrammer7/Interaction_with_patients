@@ -3,7 +3,16 @@
   "version": "1.0.1",
   "description": "Interaction patients with doctor throught DB MySQL and Smart contract Ethereum. Contract include only get access doc and annual access. DB include all other.",
   "main": "server.js",
-  "nodemonConfig": { "ext": "js", "ignore": ["*.ABIandAddress.js", "public/js/*"], "delay": "2" },
+  "nodemonConfig": {
+    "ext": "js,json",
+    "ignore": [
+      "*.ABIandAddress.js",
+      "public/js/*",
+      "*.accounts.json",
+      "routers/*.json"
+    ],
+    "delay": "4"
+  },
   "scripts": {
     "start": "nodemon ./server.js"
   },
@@ -36,6 +45,7 @@
     "ejs-mate": "^4.0.0",
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
+    "express-validator": "^7.0.1",
     "file-system": "^2.2.2",
     "ganache": "^7.7.7",
     "ipfs-core": "^0.18.0",

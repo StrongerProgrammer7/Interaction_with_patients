@@ -1,15 +1,22 @@
-const ganache = require("ganache");
+const ganache_server = require('./connectionGanache')
+const provider = ganache_server.provider;
+
 const Web3 = require("web3");
 const { json } = require('body-parser');
 const fs = require("fs");
 
-const web3 = new Web3('http://127.0.0.1:8545');
+const web3 = new Web3(provider);
 const path = require('path');
-
+// console.log(provider)
 
 function deployContract_Patient()
 {
-      return  web3.eth.getAccounts()
+
+      return provider.request(
+        {
+            method: "eth_accounts",
+            params: []
+        })
         .then(accounts =>
         {
             let source = fs.readFileSync(path.join(__dirname, '..', 'contract','Patients/artifacts/Patient.json'))
@@ -60,7 +67,11 @@ function deployContract_Patient()
 
 function deployContract_Patients(addressPatient)
 {
-    return  web3.eth.getAccounts()
+    return provider.request(
+    {
+        method: "eth_accounts",
+        params: []
+      })
     .then(accounts =>
     {
         let source = fs.readFileSync(path.join(__dirname, '..', 'contract','Patients/artifacts/Patients.json'))
@@ -107,7 +118,7 @@ let address = deployContract_Patient().then(address =>
                             let path_abi_address = path.join(__dirname, '..', 'public','js/');
                             fs.writeFileSync(path_abi_address + "ABIandAddress.js",
                             `const addressContract = "${address}"\n
-                            ABI = ${JSON.stringify(obj["abi"])}`, (error) =>
+                            const ABI = ${JSON.stringify(obj["abi"])}`, (error) =>
                             {
                                 if(error)
                                     throw error;

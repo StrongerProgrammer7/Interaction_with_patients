@@ -325,8 +325,27 @@ const connectMetamask = async () =>
                     let btn  = helper.createBtn("downloadFiles","block","btnDownloadLinks","Download links ipfs!");
                     btn.style.width="240px";
                 }*/
-
-                document.getElementById("links__registerId").style.visibility = "visible";
+            await fetch("/api/login",
+            {
+                method: 'POST',
+                body: JSON.stringify({meta:accountUser}),
+                headers:
+                {
+                    "Content-Type":"application/json"
+                }
+            }).then(hashFiles => hashFiles.json())
+            .then(data =>
+            {
+                console.log(data);
+                if(data.status === true)
+                {
+                    document.getElementById("links__registerId").style.display = "inline-block";
+                }else
+                {
+                    document.getElementById("links__login").style.display = "inline-block";
+                }
+            });
+               
                 //document.getElementById("links_setDiagnosId").style.visibility = "visible";
                 //document.getElementById("links_changeDiagnosId").style.visibility = "visible";
 

@@ -56,8 +56,6 @@
             <label for="addressOfResidence" class="form-label">Адрес проживания</label>
             <select class="form-control" name="cities" id="addressOfResidence" required>
               <option value="">--Please choose an option--</option>
-              <option value="Москва" selected>Moscow</option>
-              <option value="Краснодар">Krasnodar</option>
             </select>
             <!-- <input type="text" class="form-control" id="addressOfResidence" required value="Krasnodar"> -->
           </div>
@@ -65,8 +63,6 @@
             <label for="addressRegistered" class="form-label">Адрес по прописке</label>
             <select class="form-control" name="cities" id="addressRegistered" required>
               <option value="">--Please choose an option--</option>
-              <option value="Москва">Moscow</option>
-              <option value="Краснодар" selected>Krasnodar</option>
             </select>
             <!-- <input type="text" class="form-control" id="" required value="Moscow"> -->
           </div>
@@ -88,7 +84,15 @@
         </div>
         <div class="mb-3">
           <label for="meta" class="form-label">Ваш аккаунт</label>
-          <input type="text" class="form-control" id="meta" disabled>
+          <input type="text"  autocomplete="username" class="form-control" id="meta" disabled>
+        </div>
+        <div class="mb-3">
+          <label for="meta" class="form-label">Пароль</label>
+          <input type="password" autocomplete="new-password" class="form-control" id="password" required>
+        </div>
+        <div class="mb-3">
+          <label for="meta" class="form-label">Повторить пароль</label>
+          <input type="password"  autocomplete="new-password" class="form-control" id="password_repeat" required>
         </div>
         <button type="submit" class="btn btn-info" id="btn-open-form" style="color:wheat">Зарегистрироваться!</button>
       </form>

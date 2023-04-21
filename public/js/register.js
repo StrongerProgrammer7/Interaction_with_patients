@@ -21,7 +21,24 @@ window.addEventListener("DOMContentLoaded",async() =>
         {
             error.style.display = "none";       
             window.contract = await new window.web3.eth.Contract(ABI,addressContract);
-            //console.log(window.contract._address);
+            console.log(window.contract._address);
+
+            await fetch("/api/",
+            {
+                method: 'GET',
+                headers:
+                {
+                    "Content-Type":"application/json"
+                }
+            }).then(hashFiles => hashFiles.json()).then(cities =>
+            {
+
+                let data = cities.data;
+                putCityToSelect('addressOfResidence',data);
+                putCityToSelect('addressRegistered',data);
+                
+            });
+
         } catch (error)
         {
             messageError('There is problem with contract, check console!');
@@ -37,7 +54,7 @@ window.addEventListener("DOMContentLoaded",async() =>
         document.querySelector('#btn-open-form').disabled = true;
     }
 
-    //get data from database
+ 
     if(setNewDataBase !==null && setNewDataBase == 1)
     {
         clear_removeAttribute(); 
@@ -49,6 +66,19 @@ window.addEventListener("DOMContentLoaded",async() =>
     
 });
 
+function putCityToSelect(parent,data)
+{
+    for(let i=0;i<data.length;i++)
+    {
+        const option = document.createElement('option');
+        option.value = data[i].city;
+        option.textContent = data[i].city;
+        option.selected = true;
+        document.getElementById(parent).appendChild(option);
+        
+    }
+}
+
 document.getElementById("home").addEventListener("click", function()
 {
     window.open("/",'_self');
@@ -59,32 +89,73 @@ form.addEventListener("submit", async function()
 {
     //console.log(setNewDataBase);
     if(setNewDataBase ===null && setNewDataBase !== 1)
-        {
+    {
+        if(password.value === password_repeat.value)
             registerPatient();
-            console.log(accountUser);
-            const transaction = [
-                {
-                    from: accountUser,
-                    to: window.contract._address,
-                    gas:'200000',
-                    data: window.contract.methods.createPatient().encodeABI()
-                },
-              ];
-
-            // ethereum.request({
-            //     method: 'eth_signTransaction', transaction,
-            //   }).then((result) => {
-               
-            //     hashTx = result;
-            //     // The result varies by RPC method.
-            //     // For example, this method will return a transaction hash hexadecimal string on success.
-            //   }).catch((error) => 
-            //   {
-            //     console.log(error);
-            //     // If the request fails, the Promise will reject with an error.
-            //   });
-              
+        else
+        {
+            console.log('password don`t repeat');
         }
+        // console.log(accountUser);
+        // console.log(window.contract._address);
+            
+            // const tx = 
+            //     {
+            //         from: accountUser,
+            //         to: window.contract._address,
+            //         //gas:'200000',
+            //         data: window.contract.methods.createPatient().encodeABI()
+            //     };
+            
+            //   const hash = web3.utils.soliditySha3(tx);
+            //   console.log(hash);
+              
+            //   ethereum.request(
+            //     {
+            //         method:'eth_sign',
+            //         params:[accountUser,hash]
+            //     }
+            //   ).then(async (result) =>
+            //     {   console.log(result);
+            //         const reg = { meta:accountUser, hashTx:result};
+            //             console.log(reg);
+            //             await fetch("/api/register",
+            //             {
+            //                 method: 'POST',
+            //                 body: JSON.stringify(reg),
+            //                 headers:
+            //                 {
+            //                     "Content-Type":"application/json"
+            //                 }
+            //             }).then(hashFiles => hashFiles.json()).then(data =>
+            //             {
+            //                 console.log(data);
+            //             });
+            //     })
+            
+              //   ethereum.request({ 
+            //     method: 'personal_sign', 
+            //     params:[hash,accountUser],
+            //     from: accountUser
+                
+            // }).then(async (data) => 
+            //     {
+            //     const reg = { meta:accountUser, hashTx:data};
+            //     console.log(reg);
+            //     await fetch("/api/register",
+            //     {
+            //         method: 'POST',
+            //         body: JSON.stringify(reg),
+            //         headers:
+            //         {
+            //             "Content-Type":"application/json"
+            //         }
+            //     }).then(hashFiles => hashFiles.json()).then(data =>
+            //     {
+            //         console.log(data);
+            //     });
+            // });
+    }
     else
         changeBaseDataPatient();
     
@@ -103,37 +174,50 @@ async function registerPatient()
         addressOfResidence: addressOfResidence.value,
         addressRegistered: addressRegistered.value,
         insurancePolicy: insurancePolicy.value,    
-        meta: accountUser,
-        hashTx: hashTx
+        meta: accountUser, 
+        password:password.value
     };
-    //Если переместить на бэкэнд сторону
-    /*await fetch("/api/register",
-    {
-        method: 'POST',
-        body: JSON.stringify(registerData),
-        headers:
-        {
-            "Content-Type":"application/json"
-        }
-    }).then(hashFiles => hashFiles.json()).then(data =>
-        {
-            console.log(data);
-        });*/
+
     if(checkData(registerData) == true)
     {
-        //TODO:: обернуть внутри транзакции, потом вызов БД
-        await fetch("/api/register",
+        await window.contract.methods.createPatient().send({from :accountUser}).then((res) =>
         {
-            method: 'POST',
-            body: JSON.stringify(registerData),
-            headers:
+            console.log(res);
+            window.contract.getPastEvents("allEvents",
+            {                               
+                fromBlock: 'latest',     
+                toBlock: 'latest'     
+            }).then((events) => 
             {
-                "Content-Type":"application/json"
-            }
-        }).then(hashFiles => hashFiles.json()).then(data =>
+                success.style.display = "block";
+                error.style.display = "none";
+                success.innerText = 'Great!' + 'your contract : ' + events[0].returnValues[3];
+                console.log(events);
+            })
+            .catch((err) => console.error(err));
+            
+        })
+        .then(async () =>
         {
-            console.log(data);
+            await fetch("/api/register",
+            {
+                method: 'POST',
+                body: JSON.stringify(registerData),
+                headers:
+                {
+                    "Content-Type":"application/json"
+                }
+            }).then(hashFiles => hashFiles.json()).then(data =>
+            {
+                console.log(data);
+            });
+        })
+        .catch((err) =>
+        {
+            console.log(err);
+            messageError('Error with contract, check console');
         });
+       
 
         // let data = new Array();
         // for (let key in registerData)
@@ -144,29 +228,9 @@ async function registerPatient()
         // }
         // console.log(data);
 
-        // await window.contract.methods.createPatient().send({from :accountUser}).then((res) =>
-        // {
-        //     console.log(res);
-        //     window.contract.getPastEvents("allEvents",
-        //     {                               
-        //         fromBlock: 'latest',     
-        //         toBlock: 'latest'     
-        //     }).then((events) => 
-        //     {
-        //         success.style.display = "block";
-        //         error.style.display = "none";
-        //         success.innerText = 'Great!' + 'your contract : ' + events[0].returnValues[4];
-        //         console.log(events);
-        //     })
-        //     .catch((err) => console.error(err));
-        // }).catch((err) =>
-        // {
-        //     console.log(err);
-        //     messageError('Error with contract, check console');
-        // });
     }else
     {
-        messageError('Error! Check your data, exists empty data');
+        messageError('Error! Check your data, exists empty data or don`t right password');
     }
 }
 
@@ -271,6 +335,12 @@ function checkData(data)
            return false; 
         }
     }
+    const passReg = new RegExp(/^(?=.*[\d])(?=.*[!@#$%^&*])[\w!@#$%^&*]{6,16}$/);
+    if(passReg.test(data.password) === false || (password_repeat.value === undefined && data.password !== undefined && data.password === password_repeat.value))
+    {
+        return false;
+    }
+
     return true;
 }
 
