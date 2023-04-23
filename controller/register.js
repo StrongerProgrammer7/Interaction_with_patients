@@ -34,11 +34,11 @@ const register = async (req,res) =>
     await mysql.promise().query(`Select id FROM Patient WHERE mail = ? OR account_ethereum = ?`,[mail,meta])
     .then(res =>
     {
-        console.log(res[0].length);
+        //console.log(res[0].length);
         if(res[0].length!==0)
         {
             throw new Error('You already registered!');
-            return res.status(401).json({status:"Error",data:"You already registered!"});
+           // return res.status(401).json({status:"Error",data:"You already registered!"});
         }
         return false;
     })
@@ -49,10 +49,11 @@ const register = async (req,res) =>
                 let idCities = 0;
             
                 idCities =  await mysql.promise().query(`Select id FROM City WHERE  city = ?`, addressRegistered)
-                    .then((res) => 
-                    {
-                       return res[0][0].id;
-                    }).catch((err) => { console.log(err);});
+                            .then((res) => 
+                            {
+                               return res[0][0].id;
+                            })
+                            .catch((err) => { console.log(err);});
                 const pass_hash = bcrypt.genSalt(10,(err,salt)=>
                 {
                     bcrypt.hash(password,10, async (err,hash)=>
@@ -61,9 +62,9 @@ const register = async (req,res) =>
                             account_ethereum,isPartInformation_hidden,address_of_residence,insurance_policy,datebirthd,password) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`,
                             [idCities,surname,name,lastname,phone, mail,meta,1,addressOfResidence,insurancePolicy,bdate,hash ])
                             .then((result) => 
-                                {
-                                    return res.status(201).json({status:"success", success:"Well done!You regestered! "});
-                                })
+                            {
+                                return res.status(201).json({status:"success", success:"Well done!You regestered! "});
+                            })
                             .catch((err) => 
                             {
                                 console.log(err);

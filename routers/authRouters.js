@@ -25,6 +25,19 @@ router.get('/register',(req,res) =>
     registerHTML.pipe(res);
  
 });
+
+router.get('/profile',(req,res) => 
+{
+    res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
+    let registerHTML = fs.createReadStream('./public/profile.html','utf8');
+    /*res.sendFile("registerPatient.html",
+        {
+            root:"./public"
+        });*/
+    registerHTML.pipe(res);
+ 
+});
+
 router.get('/setNewDiagnos',(req,res) => 
 {
     res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});

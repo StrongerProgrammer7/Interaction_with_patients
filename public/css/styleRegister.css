@@ -289,3 +289,12 @@ body
   margin-bottom: 20px;
   margin-top: 15px;
 }
+input,select,option
+{
+  text-align: center;
+}
+
+.pass
+{
+  width: 48%;
+}

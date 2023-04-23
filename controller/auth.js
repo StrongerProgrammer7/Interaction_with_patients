@@ -4,6 +4,7 @@ const { check } = require('express-validator');
 const register = require("./register");
 const upload = require("./upload");
 const login = require("./login");
+const checkWereRegistered = require("./queryDB/wereRegistered");
 const selectCity = require("./selectCity");
 
 
@@ -13,6 +14,7 @@ router.post("/register",[
 ],register);
 router.post("/upload",upload);
 router.post("/login",login);
+router.post("/checkWereRegistered",checkWereRegistered);
 router.get("/",selectCity);
 //router.post("/profile",profile);
 module.exports = router;

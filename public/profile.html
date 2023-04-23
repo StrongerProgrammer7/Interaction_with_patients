@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script defer type="text/javascript" src="/js/ABIandAddress.js"></script>
+    <script defer type="module" src="/js/profile.mjs" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
+    <script src="./js/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/searchpanes/2.1.2/js/dataTables.searchPanes.min.js"></script>
+    <script src="https://cdn.datatables.net/searchpanes/2.1.2/js/searchPanes.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.6.2/js/dataTables.select.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script> -->
+
+    <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.1.2/css/searchPanes.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.2/css/select.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.1.2/css/searchPanes.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.2/css/select.dataTables.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" type = "text/css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <title>Profile</title>
+</head>
+<body>
+  <header class="navigationPanel-header">
+    <input type="checkbox" id="navigationPanel-header__inputCheck">
+    <div class="navigationPanel-header__text">
+      <div class="navigationPanel-header__title">
+        Пациент: Имя
+      </div>
+    </div>
+    <div class="navigationPanel-header__button">
+      <label for="navigationPanel-header__inputCheck">
+        <span></span>
+        <span></span>
+        <span></span>
+      </label>
+    </div>
+    <div class="navigationPanel-header__links">
+      <a href="/" target="_blank" id="home">На главную</a>
+      <a type="button" class="btn-personalData" id="btn_open_model_pass" data-bs-toggle="modal" data-bs-target="#modal_personalData">Личные данные</a>
+      <div class="navigationPanel-header__switch">
+        <input type="checkbox" id="switch__buttonThree" />
+        <label for="switch__buttonThree">
+          <i></i>
+        </label>           
+      </div>
+      <label>
+        <input type="checkbox" id="navigationPanel-header__input">
+        <span></span>
+      </label>
+    </div>
+  </header>
+      <main class="main">
+        <section id="options_data" class="options_data">
+          <table class="table table-striped table-light" id="">
+            <thead>
+              <tr class="">
+                <th scope="col">#</th>
+                <th scope="col">Ills</th>
+                <th scope="col">Status</th>
+                <th scope="col">Medic</th>
+              </tr>
+            </thead>
+            <tr>
+              <th scope="row">1</th>
+              <td>Ill1</td>
+              <td>Ill</td>
+              <td>1Med 2 Med</td>
+            </tr>
+            <tbody>
+            </tbody>
+          </table>
+        </section>
+        <section id="dataset" class="dataset mt-3">
+          <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  Список врачей
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  
+                  <!-- <input type="text" id="search_by_snl"  placeholder="Searching by name.."> -->
+                  <table class="table table-light display nowrap" id="table_doctors" >
+                    <thead>
+                      <tr>
+                        
+                      </tr>
+                      <tr class="">
+                        <th scope="col">#</th>
+                        <th scope="col">Initials surname</th>
+                        <th scope="col">Profession</th>
+                        <th scope="col">Stage</th>
+                        <th scope="col">Button</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  All ill
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <table class="table table-striped table-light display" id="table_ills">
+                    <thead>
+                      <tr class="">
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">date</th>
+                        <th scope="col">end</th>
+                        <th scope="col">Button</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      
+      <div id="problems">
+        <div id="problems_withAccount"  style="display:none;">
+      
+        </div>
+        <div id="problems_withContract"  style="display:none;">
+      
+        </div>
+      </div>
+      
+      <!-- Modal Change password-->
+<div class="modal fade" id="changePassword" tabindex="-1" aria-labelledby="modal_changePasswordLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal_changePasswordLabel">Смена пароля</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="return false;" class="form">
+          <div class="mb-3">
+            <label for="password" class="form-label">Пароль</label>
+            <input type="password" autocomplete="new-password" class="form-control" id="password" required>
+          </div>
+          <div class="mb-3">
+            <label for="password_repeat" class="form-label">Повторить пароль</label>
+            <input type="password"  autocomplete="new-password" class="form-control" id="password_repeat" required>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary btn-sub" id="btn_change_pass">Сохранить изменения</button>
+            <button type="button" class="btn btn-secondary" data-bs-target="#modal_personalData" data-bs-toggle="modal" data-bs-dismiss="modal">Вернуться назад</button>
+          </div>
+          
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal_personalData" tabindex="-1" aria-labelledby="modal_personalDataLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal_personalDataLabel">Изменить данные</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="return false;" id="form" class="col-md-18 me-5 mt-3 mb-3 form">
+          <div class="input-group input-group-sm mb-2">
+             <span class="input-group-text" id="inputGroup-sizing-sm">Имя</span>
+            <input type="text" class="form-control" id="nameId">
+          </div>
+          <div class="input-group input-group-sm mb-2">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Фамилия</span>
+            <input type="text" class="form-control" id="surnameId">
+          </div>
+          <div class="input-group input-group-sm mb-2">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Отчество</span>
+            <input type="text" class="form-control" id="lastnameId">
+          </div>
+          <div class="input-group input-group-sm mb-2">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Адрес проживания</span>
+            <select class="form-control" name="cities" id="addressOfResidence">
+              <option value="">--Please choose an option--</option>
+            </select>
+          </div>
+          <div class="input-group input-group-sm mb-2">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Адрес по прописке</span>
+            <select class="form-control" name="cities" id="addressRegistered">
+              <option value="">--Please choose an option--</option>
+            </select>
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Телефон</span>
+            <input type="phone" class="form-control" id="phonePatient">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Почта</span>
+            <input type="email" class="form-control" id="mailPatient">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Страховой полис</span>
+            <input type="text" class="form-control" id="insurancePolicy">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Дата рождения</span>
+            <input type="date" class="form-control text-center" id="bdateId">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Ваш аккаунт</span>
+            <input type="text"  autocomplete="username" class="form-control" id="meta" disabled>
+          </div>
+          <button type="button" class="btn btn-info mb-3" id="btn_open_model_pass" data-bs-toggle="modal" data-bs-target="#changePassword" data-bs-dismiss="modal">Открыть окно смены пароля</button>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-info btn-sub" id="btn-open-form">Сохранить изменения</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+          </div>
+          
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

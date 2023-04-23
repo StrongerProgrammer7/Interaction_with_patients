@@ -8,5 +8,33 @@
     <%- include('../includes/footer.ejs')%>
   </div>
   
+  <div class="modal fade" id="modalSignIN" tabindex="-1" aria-labelledby="modalSignInLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalSignInLabel">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form onsubmit="return false;">
+            <div class="mb-3">
+              <label for="meta" class="form-label">Ваш аккаунт</label>
+              <input type="text"  autocomplete="username" class="form-control" id="meta" disabled>
+            </div>
+            <div class="mb-3">
+              <label for="meta" class="form-label">Пароль</label>
+              <input type="password" autocomplete="new-password" class="form-control" id="password" required>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" id="btn_sign_up">Войти</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

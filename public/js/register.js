@@ -335,7 +335,7 @@ function checkData(data)
            return false; 
         }
     }
-    const passReg = new RegExp(/^(?=.*[\d])(?=.*[!@#$%^&*;\:})({])[\w!@#$%^&*;\:})({]{10,255}$/);
+    const passReg = new RegExp(/^(?=.*[\d])(?=.*[!@#$%^&+*;:})({])[\w!@#$%^&+*;:})({]{10,255}$/);
     if((password_repeat.value !== undefined && data.password !== undefined && data.password === password_repeat.value))
     {
         if(passReg.test(data.password) === false)

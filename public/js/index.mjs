@@ -221,6 +221,41 @@ document.getElementById("links__registerId").addEventListener("click", function(
 {
     window.open("/register",'_self');
 });
+document.getElementById("btn_sign_up").addEventListener("click", async function()
+{
+    const logged = {
+        meta:accountUser,
+        pass:password.value
+    }
+    await fetch("/api/login",
+    {
+        method: 'POST',
+        body: JSON.stringify(logged),
+        headers:
+        {
+            "Content-Type":"application/json"
+        }
+    })
+    .then(hashFiles => hashFiles.json())
+    .then(data =>
+    {
+        console.log(data);
+       if(data.status===true)
+       {
+            window.open("/profile",'_self');
+       }else
+       {
+            console.log('Incorrect password');
+       }
+    })
+    .catch(error=>console.log);
+    
+});
+
+document.getElementById('btn_open_model_pass').addEventListener('click',function()
+{
+    document.getElementById('meta').value = accountUser;
+})
 /*
 document.getElementById("links_setDiagnosId").addEventListener("click", function()
 { 
@@ -325,7 +360,7 @@ const connectMetamask = async () =>
                     let btn  = helper.createBtn("downloadFiles","block","btnDownloadLinks","Download links ipfs!");
                     btn.style.width="240px";
                 }*/
-            await fetch("/api/login",
+            await fetch("/api/checkWereRegistered",
             {
                 method: 'POST',
                 body: JSON.stringify({meta:accountUser}),
@@ -333,7 +368,8 @@ const connectMetamask = async () =>
                 {
                     "Content-Type":"application/json"
                 }
-            }).then(hashFiles => hashFiles.json())
+            })
+            .then(hashFiles => hashFiles.json())
             .then(data =>
             {
                 console.log(data);
@@ -342,9 +378,15 @@ const connectMetamask = async () =>
                     document.getElementById("links__registerId").style.display = "inline-block";
                 }else
                 {
-                    document.getElementById("links__login").style.display = "inline-block";
+                    document.getElementById("btn_open_model_pass").style.display = "inline-block";
                 }
-            });
+            })
+            .catch(error =>
+                {
+                    console.log(error);
+                    document.getElementById("links__registerId").style.display = "inline-block";
+                    document.getElementById("btn_open_model_pass").style.display = "none";
+                });
                
                 //document.getElementById("links_setDiagnosId").style.visibility = "visible";
                 //document.getElementById("links_changeDiagnosId").style.visibility = "visible";

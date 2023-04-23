@@ -36,36 +36,39 @@
       <div class="container-fluid text-center" id="title">
         <h1 id="">Регистрация</h1>
       <div class="d-flex h-100 justify-content-center align-items-center p-0">
-      <form onsubmit="return false;" id="form" class="col-md-3 center">
-        <div class="mb-2">
-          <label for="nameId" class="form-label">Имя</label>
-          <input type="text" class="form-control" id="nameId" required value="Bob">
-          <p class="warning">Не используйте пробел или спец символы</p>
-        </div>
-        <div class="mb-2">
+      <form onsubmit="return false;" id="form" class="col-md-6 ">
+        <div class="d-flex justify-content-around">
+          <div>
+            <label for="nameId" class="form-label">Имя</label>
+            <input type="text" class="form-control" id="nameId" required value="Bob">
+            <p class="warning">Не используйте пробел или спец символы</p>
+          </div>
+          <div class="ms-2">
             <label for="surnameId" class="form-label">Фамилия</label>
             <input type="text" class="form-control" id="surnameId" required value="Falcon">
             <p class="warning">Не используйте пробел или спец символы</p>
           </div>
-          <div class="mb-2">
+          <div class="ms-2">
             <label for="lastnameId" class="form-label">Lastname</label>
             <input type="text" class="form-control" id="lastnameId">
             <p class="warning">Если есть отчество: <br>Не используйте пробел или спец символы</p>
           </div>
+        </div>
+        <div class="d-flex justify-content-evenly">
           <div class="mb-3">
             <label for="addressOfResidence" class="form-label">Адрес проживания</label>
             <select class="form-control" name="cities" id="addressOfResidence" required>
               <option value="">--Please choose an option--</option>
             </select>
-            <!-- <input type="text" class="form-control" id="addressOfResidence" required value="Krasnodar"> -->
           </div>
           <div class="mb-3">
             <label for="addressRegistered" class="form-label">Адрес по прописке</label>
             <select class="form-control" name="cities" id="addressRegistered" required>
               <option value="">--Please choose an option--</option>
             </select>
-            <!-- <input type="text" class="form-control" id="" required value="Moscow"> -->
           </div>
+        </div>
+        <div class="d-flex justify-content-around">
           <div class="mb-3">
             <label for="phonePatient" class="form-label">Телефон</label>
             <input type="phone" class="form-control" id="phonePatient" required value="+79995685225">
@@ -75,24 +78,33 @@
             <input type="email" class="form-control" id="mailPatient" value="mail@mail.ru">
           </div>
           <div class="mb-3">
-            <label for="insurancePolicy" class="form-label">Страховой полис</label>
-            <input type="text" class="form-control" id="insurancePolicy" required value="195-1586-649-649">
+            <label for="bdateId" class="form-label">Дата рождения</label>
+            <input type="date" class="form-control text-center" id="bdateId" required value="1999-06-22">
           </div>
+        </div>
+        
         <div class="mb-3">
-          <label for="bdateId" class="form-label">Дата рождения</label>
-          <input type="date" class="form-control text-center" id="bdateId" required value="1999-06-22">
+          <label for="insurancePolicy" class="form-label">Страховой полис</label>
+          <input type="text" class="form-control" id="insurancePolicy" required value="195-1586-649-649">
         </div>
         <div class="mb-3">
           <label for="meta" class="form-label">Ваш аккаунт</label>
           <input type="text"  autocomplete="username" class="form-control" id="meta" disabled>
         </div>
-        <div class="mb-3">
-          <label for="meta" class="form-label">Пароль</label>
-          <input type="password" autocomplete="new-password" class="form-control" id="password" required>
+        <div class="d-flex justify-content-between">
+          <div class="mb-3 pass">
+            <label for="password" class="form-label">Пароль</label>
+            <input type="password" autocomplete="new-password" class="form-control" id="password" value="+JwfM8b*4x3^^BC*jIK" required>
+          </div>
+          <div class="mb-3 pass">
+            <label for="password_repeat" class="form-label">Повторить пароль</label>
+            <input type="password"  autocomplete="new-password" class="form-control" id="password_repeat" value="+JwfM8b*4x3^^BC*jIK" required>
+          </div>
         </div>
         <div class="mb-3">
-          <label for="meta" class="form-label">Повторить пароль</label>
-          <input type="password"  autocomplete="new-password" class="form-control" id="password_repeat" required>
+          <label for="formFileSm" class="form-label">Подтверждающий документ</label>
+          <input class="form-control form-control-sm" id="formFileSm" type="file">
+          <p class="warning">Если вы являетесь врачом: <br>Приложите подтверждающий документ</p>
         </div>
         <button type="submit" class="btn btn-info" id="btn-open-form" style="color:wheat">Зарегистрироваться!</button>
       </form>
