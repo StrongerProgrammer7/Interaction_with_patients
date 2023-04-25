@@ -12,6 +12,7 @@ const get_all_patients = require('./queryDB/GET/get_all_patient');
 const get_all_info_about_doctor = require('./queryDB/POST/get_all_info_about_doctor');
 const get_all_ill_s_Patient = require('./queryDB/POST/get_all_ill_s_Patient');
 const get_list_doctors_haveAccess = require('./queryDB/POST/get_list_doctors_haveAccess');
+const update_list_doctors = require('./queryDB/POST/update_list_doctors')
 /*-----------------------------------*/
 
 router.post("/register",[
@@ -25,6 +26,7 @@ router.post("/get_all_info_about_doctor",get_all_info_about_doctor);
 router.post("/checkWereRegistered",checkWereRegistered);
 router.post("/get_all_ill_s_patient",get_all_ill_s_Patient);
 router.post('/get_list_doctors_haveAccess',get_list_doctors_haveAccess);
+router.post('/update_list_doctors',update_list_doctors);
 /*----------------GET------------------------*/
 
 //-------DB

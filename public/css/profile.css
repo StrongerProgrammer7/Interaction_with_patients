@@ -509,7 +509,7 @@ header
   height: 20px;
 }
 
-#table_doctors_length select
+#table_doctors_length select, #table_ills_length select
 {
   width: 50%!important;
 }
@@ -520,4 +520,13 @@ header
   border: 0 !important; */
   padding: 0!important;
   margin: 0!important;
+}
+
+.hide_columns 
+{
+  display: none;
+}
+.dtsp-title
+{
+  font-weight: bold!important;
 }

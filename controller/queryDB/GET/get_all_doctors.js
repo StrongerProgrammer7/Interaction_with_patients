@@ -2,7 +2,7 @@ const mysql = require('../../../routers/connectionMySQL');
 
 const select_all_doctors = async (req,res) =>
 {
-     await mysql.promise().query(`Select Doctor.id,surname,name,lastname,profession, mail,City.city as city FROM Doctor INNER JOIN (Hospital INNER JOIN City ON City.id = Hospital.city_id) ON Hospital.id= Doctor.hospital_id`)
+     await mysql.promise().query(`Select Doctor.id,surname,name,lastname,profession, mail,City.city as city,Doctor.account_ethereum FROM Doctor INNER JOIN (Hospital INNER JOIN City ON City.id = Hospital.city_id) ON Hospital.id= Doctor.hospital_id`)
     .then((result,err) =>
     {
         if(err)
@@ -27,7 +27,7 @@ const select_all_doctors = async (req,res) =>
                 doctor_object.mail = doctors_data[i].mail !== null? doctors_data[i].mail : "";
                 doctor_object.profession = doctors_data[i].profession.toLowerCase();
                 doctor_object.city = doctors_data[i].city;
-                /*<button type="button" class="btn btn-primary btn-access" id="access_doctors">Разрешить доступ</button>*/
+                doctor_object.meta = doctors_data[i].account_ethereum;
                 all_doctors.push(doctor_object);
             }
             return res.status(200).json({data:all_doctors,message:"Success"});
