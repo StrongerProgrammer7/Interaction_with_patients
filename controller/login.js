@@ -1,7 +1,7 @@
 const { json } = require('body-parser');
 const jwt = require("jsonwebtoken");
 const mysql = require('../routers/connectionMySQL');
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 const login = async (req,res) =>
 {
@@ -15,17 +15,20 @@ const login = async (req,res) =>
         return res.status(401).json({status:"Fail",error:"Input meta or password"});
     }else
     {
-        await mysql.query(`Select * FROM Patient WHERE account_ethereum = ?`,[meta], async(err,result) =>
+        await mysql.promise().query(`Select * FROM Patient WHERE account_ethereum = ?`,[meta])
+        .then((result,error) =>
         {
-            if(err)
-            {
-                throw new Error('You already registered!');
-                //return res.status(200).json({status:true, success:"Patient don't Reg! "});
-            }
-            if(result[0].length===0 || !await bcrypt.compare(pass,result[0].password))
+            
+            if(error)
+                throw new Error('Problem with signIn');
+            return result[0];
+        })
+        .then(async (patient)=>
+        {
+            let validPassword = await bcrypt.compare(pass,patient[0].password);
+            if(patient.length===0 || !validPassword)
             {
                 return res.status(401).json({status:"error", error:"login or pass incorrect"})
-                //return res.status(200).json({status:false, success:"Patient reg! "});
             }else
             {
                 // const token = jwt.sign({id: result[0].id}, process.env.JWT_SECRET,
@@ -40,13 +43,12 @@ const login = async (req,res) =>
                 // res.cookie("userLoggedIn",token,cookieOption);
                 return res.status(201).json({status:true,success:"User has been logged in"});
             }
-            
         })
-        // .catch((err) => 
-        // {
-        //     console.log(err);
-        //     return res.status(500).json({status:"Fail", error:"Problem with server!"});
-        // });
+        .catch((err) => 
+         {
+             console.log(err);
+             return res.status(500).json({status:"Fail", error:"Problem with server to signin!"});
+         });
     }
     
     

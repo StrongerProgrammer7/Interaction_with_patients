@@ -1,5 +1,7 @@
 var accountUser = null;
 var connectedContract = false;
+var doctors_list;
+
 import * as helper from '../utils/helpers.js';
 
 document.addEventListener("DOMContentLoaded", async() =>
@@ -20,7 +22,6 @@ document.addEventListener("DOMContentLoaded", async() =>
         console.log(error);
     }
     
-
 });
 
 document.getElementById("switch__buttonThree").addEventListener("click",function()
@@ -63,7 +64,21 @@ const connectMetamask = async () =>
                 if(connectedContract==false)
                     connectContract();                           
 
+                await fetch("/api/get_list_doctors_haveAccess",
+                {
+                    method: 'POST',
+                    body: JSON.stringify({meta:accountUser}),
+                    headers:
+                    {
+                        "Content-Type":"application/json"
+                    }
+                }).then(hashFiles => hashFiles.json()).then(result =>
+                {
+                    doctors_list = result.data[0].list_doc.split(',');    
+                })
+                .catch(error=>console.log);
 
+                fillTableDoctors();
                 /*if(document.getElementById("historyPatient").style.display == "none")
                 {
                     let btn = helper.createBtn("historyPatient","block","btnGetHistoryPatient","Get patient's history");
@@ -191,6 +206,133 @@ function showProblem(parentDiv,problem,text,textForButton,idForButton)
     }
 }
 
+var data_doctors;
+async function fillTableDoctors()
+{
+    await fetch('/api/get_all_doctors')
+    .then(hashdata => hashdata.json())
+    .then(result =>
+        {
+            let data= result.data;
+            for(let i =0;i<data.length;i++)
+            {
+                if(doctors_list.indexOf(`${data[i].id}`) > -1)
+                {
+                    data[i].action = `
+                        <div class='btn-group'>
+                            <button class='btn btn-danger btn-sm' id='btn_action_revoke'>Забрать доступ</button> `
+                }else
+                {
+                    data[i].action = `
+                        <div class='btn-group'>
+                            <button class='btn btn-info btn-sm' id='btn_action_give'>Дать доступ</button>`
+                }
+                data[i].action +=`<button class='btn btn-primary btn-sm' id='btn_moreInfo'>О враче</button>
+                </div>`
+            }
+            data_doctors= data;
+
+            let table = new DataTable('#table_doctors',
+            {
+                responsive: true,
+                data: data_doctors,
+                columns: [
+                    { data: "num"},
+                    { data: 'initials' },
+                    { data: 'mail'},
+                    { data: 'profession' },
+                    { data: 'city' },
+                    { data: 'action'}
+                ],
+            
+                searchPanes: 
+                {
+                    cascadePanes:true,
+                    dtOpts:
+                    {
+                        // dom:'tp',
+                        // paging:true,
+                        // pagingType:'numbers',
+                        // searching:true,
+                        info: true
+                    },
+                    viewCount: true,
+                    collapse: true,
+                    initCollapsed: true,
+                    layout: 'columns-3',
+                    preSelect:[
+                        {
+                            column:4,
+                            rows: ['Краснодар']
+                        }
+                    ]
+                },
+                dom: 'Plfrtip',
+                columnDefs:[
+                    {
+                        searchPanes:
+                        {
+                            show:true
+                        },
+                        targets:[3,4]
+                    },
+                    {
+                        searchPanes:
+                        {
+                            show:false
+                        },
+                        targets:[1,2]
+                    },
+                    {
+                        searchPanes: {
+                            options: [
+                                {
+                                    label: 'Не имеет доступ',
+                                    value: function(rowData, rowIdx) 
+                                    {
+                                        return rowData.action.includes('Дать доступ');
+                                    }
+                                },
+                                {
+                                    label: 'Имеет доступ',
+                                    value: function(rowData, rowIdx) 
+                                    {
+                                        return rowData.action.includes('Забрать доступ');
+                                    }
+                                }
+                            ]
+                           // className: 'bord'
+                        },
+                        targets: [5]
+                    },
+                ],
+            
+                // dom: 'Bfrtip',
+                // buttons: [
+                //     {
+                //         text: 'Profession',
+                //         className: 'btn btn-primary dropdown-toggle',
+                //         action: function ( e, dt, node, config ) 
+                //         {
+                //             //$('.dt-button').toggleClass('')
+                //         }
+                //     }
+                // ],
+                scrollY:        300,
+                deferRender:    true,
+                scroller:       true
+               // select: true,
+                //keys: true
+               
+            });
+            
+            table.searchPanes.container().prependTo(table.table().container());
+            table.searchPanes.resizePanes();
+        })
+    .catch(error=>console.log);
+
+
+}
 
 let data =[
     {
@@ -239,64 +381,8 @@ let data =[
         "Profession":   '<p class="profession">Лор</p>',
         "Stage":     "1 year",
         "meta":"0x1",
-        "Button": '<button type="button" class="btn btn-primary btn-access">Разрешить доступ</button>'
+        "Button": '<button type="button" class="btn btn-primary btn-access" id="access_doctors">Разрешить доступ</button>'
     }
 ]
-let table = new DataTable('#table_doctors',
-{
 
-    searchPanes: 
-    {
-        cascadePanes:true,
-        dtOpts:
-        {
-            // dom:'tp',
-            // paging:true,
-            // pagingType:'numbers',
-            // searching:true
-            info: true
-        },
-        viewCount: true,
-        collapse: true,
-        initCollapsed: true
-    },
-    dom: 'Plfrtip',
-    columnDefs:[
-        {
-            searchPanes:
-            {
-                show:true
-            },
-            targets:[1,2,3]
-        }
-    ],
-    data: data,
-    columns: [
-        {data: "num"},
-        { data: 'Initials surname' },
-        { data: 'Profession' },
-        { data: 'Stage' },
-        { data: 'Button' }
-    ],
-    // dom: 'Bfrtip',
-    // buttons: [
-    //     {
-    //         text: 'Profession',
-    //         className: 'btn btn-primary dropdown-toggle',
-    //         action: function ( e, dt, node, config ) 
-    //         {
-    //             //$('.dt-button').toggleClass('')
-    //         }
-    //     }
-    // ],
-    scrollY:        300,
-    deferRender:    true,
-    scroller:       true
-   // select: true,
-    //keys: true
-   
-});
-
-table.searchPanes.container().prependTo(table.table().container());
-table.searchPanes.resizePanes();
 

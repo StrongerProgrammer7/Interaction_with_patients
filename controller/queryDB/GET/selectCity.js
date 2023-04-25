@@ -1,10 +1,10 @@
 const { json } = require('body-parser');
-const mysql = require('../routers/connectionMySQL');
+const mysql = require('../../../routers/connectionMySQL');
 
 
-const selectCity = async (req,res,next) =>
+const selectCity = async (req,res) =>
 {
-    await mysql.promise().query(`SELECT city FROM City`)
+    await mysql.promise().query(`SELECT id,region, city FROM City`)
     .then((result,error) =>
     {
         if(error)

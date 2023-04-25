@@ -1,6 +1,6 @@
 const { json } = require('body-parser');
 const mysql = require('../routers/connectionMySQL');
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 // const contract = require('../routers/deployeContract');
 // const ganache_server = require('../routers/connectionGanache')
@@ -11,7 +11,7 @@ const bcrypt = require("bcryptjs");
 // const web3 = new Web3(provider);
 
 const register = async (req,res) =>
-{
+{//TODO: Fix database
     const 
     {
         name, 
@@ -36,47 +36,31 @@ const register = async (req,res) =>
     {
         //console.log(res[0].length);
         if(res[0].length!==0)
-        {
             throw new Error('You already registered!');
-           // return res.status(401).json({status:"Error",data:"You already registered!"});
-        }
-        return false;
     })
-    .then(async function(isExitsts) 
+    .then(async function() 
         {
-            if(isExitsts === false)
+            const pass_hash = bcrypt.genSalt(10,(err,salt)=>
             {
-                let idCities = 0;
-            
-                idCities =  await mysql.promise().query(`Select id FROM City WHERE  city = ?`, addressRegistered)
-                            .then((res) => 
-                            {
-                               return res[0][0].id;
-                            })
-                            .catch((err) => { console.log(err);});
-                const pass_hash = bcrypt.genSalt(10,(err,salt)=>
+                bcrypt.hash(password,10, async (err,hash)=>
                 {
-                    bcrypt.hash(password,10, async (err,hash)=>
-                    {
-                        await mysql.promise().query(`INSERT INTO Patient(city_id,surname,name,lastname,phone,mail,
-                            account_ethereum,isPartInformation_hidden,address_of_residence,insurance_policy,datebirthd,password) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`,
-                            [idCities,surname,name,lastname,phone, mail,meta,1,addressOfResidence,insurancePolicy,bdate,hash ])
-                            .then((result) => 
-                            {
-                                return res.status(201).json({status:"success", success:"Well done!You regestered! "});
-                            })
-                            .catch((err) => 
-                            {
-                                console.log(err);
-                                return res.status(500).json({status:"bad",message:`${err.sqlMessage}`});
-                            });
-                    })
+                    if(err)
+                        throw new Error('Problem with hashing password');
+
+                    await mysql.promise().query(`INSERT INTO Patient(city_id,surname,name,lastname,phone,mail,
+                        account_ethereum,isPartInformation_hidden,address_of_residence,insurance_policy,datebirthd,password) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`,
+                        [addressRegistered,surname,name,lastname,phone, mail,meta,1,addressOfResidence,insurancePolicy,bdate,hash ])
+                        .then((result) => 
+                        {
+                            return res.status(201).json({status:"success", success:"Well done!You regestered! "});
+                        })
+                        .catch((err) => 
+                        {
+                            console.log(err);
+                            return res.status(500).json({status:"bad",message:`${err.sqlMessage}`});
+                        });
                 })
-                
-            }else
-            {
-                return res.status(400).json({status:"bad",message:`You already registered!`});
-            }
+            })
         })
     .catch(err =>console.log(err));
     

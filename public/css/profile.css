@@ -498,12 +498,12 @@ header
   margin-bottom: 0!important;
 }
 
-.dtsp-columns-2, .dtsp-columns-1
+/* .dtsp-columns-2, .dtsp-columns-1
 {
   max-width: 30%!important;
   min-width: 15%!important;
   font-size: 0.8rem !important;
-}
+} */
 .dtsp-paneButton
 {
   height: 20px;
@@ -514,8 +514,10 @@ header
   width: 50%!important;
 }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover
+.dataTables_wrapper, .dataTables_paginate ,.paginate_button, .dataTables_wrapper .dataTables_paginate .paginate_button:hover
 {
-  background: rgba(255, 255, 255, 0)!important;
-  border: 0 !important;
+  /* background: rgba(255, 255, 255, 0)!important;
+  border: 0 !important; */
+  padding: 0!important;
+  margin: 0!important;
 }

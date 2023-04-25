@@ -37,6 +37,7 @@
   "homepage": "https://github.com/StrongerProgrammer7/Interaction_with_patients#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.2",
+    "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "browserify": "^17.0.0",

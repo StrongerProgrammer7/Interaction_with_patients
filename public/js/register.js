@@ -23,7 +23,7 @@ window.addEventListener("DOMContentLoaded",async() =>
             window.contract = await new window.web3.eth.Contract(ABI,addressContract);
             console.log(window.contract._address);
 
-            await fetch("/api/",
+            await fetch("/api/get_cities",
             {
                 method: 'GET',
                 headers:
@@ -71,9 +71,9 @@ function putCityToSelect(parent,data)
     for(let i=0;i<data.length;i++)
     {
         const option = document.createElement('option');
-        option.value = data[i].city;
-        option.textContent = data[i].city;
-        option.selected = true;
+        option.value = data[i].id;
+        option.textContent = `${data[i].region}:${data[i].city}`;
+        option.selected = true; //TODO: Delete after test 
         document.getElementById(parent).appendChild(option);
         
     }
@@ -180,6 +180,7 @@ async function registerPatient()
 
     if(checkData(registerData) == true)
     {
+        //TODO Begin query DB ,check repeat 
         await window.contract.methods.createPatient().send({from :accountUser}).then((res) =>
         {
            // console.log(res);

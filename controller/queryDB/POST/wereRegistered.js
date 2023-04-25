@@ -1,4 +1,4 @@
-const mysql = require('../../routers/connectionMySQL');
+const mysql = require('../../../routers/connectionMySQL');
 
 
 const checkWereRegistered = async (req,res) =>
