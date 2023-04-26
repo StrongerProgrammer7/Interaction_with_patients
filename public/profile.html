@@ -164,7 +164,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form onsubmit="return false;" class="form">
+        <form onsubmit="return false;" id="form_change_password" class="form">
           <div class="mb-3">
             <label for="password" class="form-label">Пароль</label>
             <input type="password" autocomplete="new-password" class="form-control" id="password" required>
@@ -193,7 +193,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form onsubmit="return false;" id="form" class="col-md-18 me-5 mt-3 mb-3 form">
+        <form onsubmit="return false;" id="form_change_personalData" class="col-md-18 me-5 mt-3 mb-3 form">
           <div class="input-group input-group-sm mb-2">
              <span class="input-group-text" id="inputGroup-sizing-sm">Имя</span>
             <input type="text" class="form-control" id="nameId">
@@ -240,7 +240,7 @@
           </div>
           <button type="button" class="btn btn-info mb-3" id="btn_open_model_pass" data-bs-toggle="modal" data-bs-target="#changePassword" data-bs-dismiss="modal">Открыть окно смены пароля</button>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-info btn-sub" id="btn-open-form">Сохранить изменения</button>
+            <button type="submit" class="btn btn-info btn-sub" id="btn_send_personalData">Сохранить изменения</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
           </div>
           

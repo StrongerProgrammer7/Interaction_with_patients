@@ -107,7 +107,9 @@ document.addEventListener("click", function(e)
                 {
                     console.log("Problem with give access!",error);    
                 }
-            }   
+            }
+            
+           
         }
     } catch (error) 
     {
@@ -172,8 +174,25 @@ const connectMetamask = async () =>
                 })
                 .catch(error=>console.log);
 
+                await fetch('/api/getCity',
+                {
+                    method: 'POST',
+                    body: JSON.stringify({meta:accountUser}),
+                    headers:
+                    {
+                        "Content-Type":"application/json"
+                    }
+                }).then(hashData => hashData.json())
+                .then(result =>
+                    {
+                        console.log(result.data);
+                        city_patient = result;
+                    })
+                .catch(error => console.log);
+
                 fillTableDoctors();
                 fillTableIlls();
+                fillFormPersonalData();
                 /*if(document.getElementById("historyPatient").style.display == "none")
                 {
                     let btn = helper.createBtn("historyPatient","block","btnGetHistoryPatient","Get patient's history");
@@ -213,6 +232,8 @@ const connectMetamask = async () =>
         showProblem("account","problems_withAccount","Не обнаружен web3 или кросчейн-кошелек MetaMask! Пожалуйста установите соответствующие расширение для браузера и попробуйте снова!","Повторное соединение","btnSwitch");
     }
 }
+
+
 
 const connectContract = async () =>
 {
@@ -370,7 +391,7 @@ async function fillTableDoctors()
                 preSelect:[
                     {
                         column:4,
-                        rows: ['Краснодар']
+                        rows: [city_patient]
                     }
                 ]
             },
@@ -637,4 +658,197 @@ async function fillTableIlls()
     .catch(error=>console.log);
 
 
+}
+
+async function fillFormPersonalData()
+{
+    Promise.all([
+        await fetch("/api/get_cities",
+        {
+            method: 'GET',
+            headers:
+            {
+                "Content-Type":"application/json"
+            }
+        }).then(hashFiles => hashFiles.json()),
+        await fetch("/api/get_all_personalInfo_patient",
+        {
+            method: 'POST',
+            body: JSON.stringify({meta:accountUser}),
+            headers:
+            {
+                "Content-Type":"application/json"
+            }
+        })
+        .then(hashdata => hashdata.json())
+    ])
+    .then(result =>
+        {
+           // console.log(result);
+            let cities = result[0].data;
+            putCityToSelect('addressOfResidence',cities);
+            putCityToSelect('addressRegistered',cities);
+
+            let data = result[1].data[0];
+            console.log(data);
+            nameId.value = data.name;
+            surnameId.value = data.surname;
+            lastnameId.value = data.lastname;
+            var options_dd_mm_yyyy = {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric'
+                //timezone: 'UTC',
+            };
+
+            let birthday = `${ (new Date(data.datebirthd)).toISOString().slice(0,10)}`
+            bdateId.value = birthday;
+
+            phonePatient.value = data.phone;
+            mailPatient.value = data.mail;
+            const addressRegistered = document.getElementById('addressRegistered').getElementsByTagName('option');
+            const addressResidence = document.getElementById('addressOfResidence').getElementsByTagName('option');
+            let count_city_personal_data = 0;
+            for(let i=0;i<addressRegistered.length;i++)
+            {
+                if(addressRegistered[i].text.includes(data.city) === true )
+                {
+                    addressRegistered[i].selected =true;
+                    count_city_personal_data++;
+                }
+                if(addressResidence[i].text.includes(data.city) === true)
+                {
+                    addressResidence[i].selected =true;
+                    count_city_personal_data++;
+                }
+                //console.log(addressRegistered[i].text);
+                if(count_city_personal_data===2)
+                    break;
+            }
+            insurancePolicy.value =data.insurance_policy;    
+            meta.value = accountUser; 
+        })
+   
+    // .then(cities =>
+    // {
+
+    //     let data = cities.data;
+    //     putCityToSelect('addressOfResidence',data);
+    //     putCityToSelect('addressRegistered',data);
+    //     return;
+    // }).then( async () =>
+    // {
+       
+    //     .then(result =>
+    //         {
+    //             data = result.data[0]
+    //             console.log(data);
+    //             nameId.value = data.name;
+    //             surnameId.value = data.surname;
+    //             lastnameId.value = data.lastname;
+    //             bdateId.value = data.datebirthd;
+    //             phonePatient.value = data.phone;
+    //             mailPatient.value = data.mail;
+    //             const addressRegistered = document.getElementById('addressRegistered').getElementsByTagName('option');
+    //             for(let i=0;i<addressRegistered.length;i++)
+    //             {
+    //                 //if(addressRegistered[i].value === )
+    //                 console.log(addressRegistered[i].text);
+    //             }
+    //            // addressOfResidence.value = data.addressResidence;
+    //             //addressRegistered.value = data.city;
+    //             insurancePolicy.value =data.insurance_policy;    
+    //             meta = accountUser; 
+    //         }).catch(error=>console.log);
+    // })
+    // .catch(error => console.log);
+    
+}
+
+function putCityToSelect(parent,data)
+{
+    for(let i=0;i<data.length;i++)
+    {
+        const option = document.createElement('option');
+        option.value = data[i].id;
+        option.textContent = `${data[i].region}:${data[i].city}`;
+        document.getElementById(parent).appendChild(option);
+        
+    }
+}
+
+
+document.getElementById('form_change_personalData').addEventListener("submit", async function()
+{
+    const personalData = 
+    {
+        name: nameId.value,
+        surname: surnameId.value,
+        lastname: lastnameId.value,
+        datebirthd: bdateId.value,
+        phone:phonePatient.value,
+        mail:mailPatient.value,
+        address_of_residence: addressOfResidence.value,
+        city_id: addressRegistered.value,
+        insurance_policy: insurancePolicy.value,    
+        meta: accountUser, 
+    };
+    if(checkData(personalData) == true)
+    {
+
+        await fetch("/api/update_pesonalInfo_patient",
+        {
+            method: 'POST',
+            body: JSON.stringify(personalData),
+            headers:
+            {
+                "Content-Type":"application/json"
+            }
+        }).then(hashFiles => hashFiles.json()).then(data =>
+        {
+            console.log(data);
+        });
+    }
+});
+
+//TODO: form change password
+
+function checkData(data)
+{
+    if(data.name === undefined || data.surname === undefined || data.addressOfResidence === undefined || data.addressRegistered === undefined || data.insurancePolicy === undefined || data.bdate === undefined )
+    {
+        return false;
+    }
+    if(data.name === null || data.surname === null || data.addressOfResidence === null || data.addressRegistered === null || data.insurancePolicy === null || data.bdate === null )
+    {
+        return false;
+    }
+    if(data.name == "" || data.surname == "" || data.addressOfResidence == "" || data.addressRegistered == "" || data.insurancePolicy == "" || data.bdate == "" )
+    {
+        return false;
+    }
+    var notOnlyWord = new RegExp("^.*[^A-zА-яЁё].*$");
+    if(notOnlyWord.test(data.name) && notOnlyWord.test(data.surname))
+    {
+       return false; 
+    }
+    if(data.lastname !== undefined && data.lastname !== null && data.lastname != "")
+    {
+        if(notOnlyWord.test(data.lastname))
+        {
+           return false; 
+        }
+    }
+    const passReg = new RegExp(/^(?=.*[\d])(?=.*[!@#$%^&+*;:})({])[\w!@#$%^&+*;:})({]{10,255}$/);
+    if((password_repeat.value !== undefined && data.password !== undefined && data.password === password_repeat.value))
+    {
+        if(passReg.test(data.password) === false)
+        {
+            console.log(passReg.test(data.password))
+            return false;
+        }
+    }
+    
+
+    return true;
 }
