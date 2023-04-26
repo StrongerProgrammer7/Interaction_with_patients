@@ -4,6 +4,8 @@ var list_doctors_have_access =[];
 var city_patient = "";
 var table_doctors;
 var table_ills;
+var table_actual_ills;
+
 import * as helper from '../utils/helpers.js';
 
 document.addEventListener("DOMContentLoaded", async() =>
@@ -652,6 +654,48 @@ async function fillTableIlls()
            
         });
 
+        let tab ="";
+        let countIlls = 0;
+        list_ills.forEach(ill => 
+        {
+            if(ill.status.includes('ill') || ill.status.includes('Болен'))
+            {
+                tab += `<tr>
+                <td class="red_color_text">${countIlls+1}</td>
+                <td>${ill.name_ill}</td>
+                <td>${ill.treatment}</td>
+                </tr>`
+            }    
+        });
+        document.getElementById('table_actual_ills_tbody').innerHTML = tab;
+
+        table_actual_ills = new DataTable('#table_actual_ills',
+        {
+            responsive: true,
+            initComplete: function() {
+                //Show datatable when load complete
+                $('#table_actual_ills').show();
+            },
+            data: list_ills,
+            columns: [
+                { data: "num"},
+                { data: 'name_ill' },
+                { data: 'treatment'}
+            ],
+            rowCallback: function(row,data,index)
+            {
+                //TDO: Realize delete row
+                console.log(data.status)
+                console.log(data.status.includes('ill') !== true && data.status.includes('Болен') !== true )
+                if(data.status.includes('ill') !== true && data.status.includes('Болен') !== true)
+                    jQuery(row).hide();
+            },
+            scrollY: 300,
+            scrollX: 100,
+            deferRender: true,
+            scroller: true
+           
+        });
         // table_ills.searchPanes.container().prependTo(table_ills.table().container());
         // table_ills.searchPanes.resizePanes();
     })
@@ -690,7 +734,7 @@ async function fillFormPersonalData()
             putCityToSelect('addressRegistered',cities);
 
             let data = result[1].data[0];
-            console.log(data);
+            //console.log(data);
             nameId.value = data.name;
             surnameId.value = data.surname;
             lastnameId.value = data.lastname;

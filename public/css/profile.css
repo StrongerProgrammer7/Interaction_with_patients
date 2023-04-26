@@ -416,6 +416,7 @@ header
 {
   max-width: 30%;
   width: 100%; 
+  margin-top: 15px;
 }
 
 .form
@@ -509,11 +510,14 @@ header
   height: 20px;
 }
 
-#table_doctors_length select, #table_ills_length select
+#table_doctors_length select, #table_ills_length select, #table_actual_ills_length select
 {
   width: 50%!important;
 }
-
+#table_actual_ills_filter input
+{
+  width: 50%;
+}
 .dataTables_wrapper, .dataTables_paginate ,.paginate_button, .dataTables_wrapper .dataTables_paginate .paginate_button:hover
 {
   /* background: rgba(255, 255, 255, 0)!important;
@@ -529,4 +533,9 @@ header
 .dtsp-title
 {
   font-weight: bold!important;
+}
+
+.red_color_text
+{
+  color: red !important;;
 }
