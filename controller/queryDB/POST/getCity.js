@@ -2,16 +2,22 @@ const { json } = require('body-parser');
 const mysql = require('../../../routers/connectionMySQL');
 
 
-const selectCity = async (req,res) =>
+const selectCity_patient = async (req,res) =>
 {
-    await mysql.promise().query(`SELECT id,region, city FROM City`)
+    const
+    {
+        meta
+    }= req.body;
+    await mysql.promise().query(`SELECT city FROM Patient
+    INNER JOIN City ON City.id = Patient.city_id
+    WHERE Patient.account_ethereum = ?`,[meta])
     .then((result,error) =>
     {
         if(error)
         {
             return res.status(300).json({status: false,data: '',error:error});
         }
-        return res.status(200).json({status:true, data:result[0]});
+        return res.status(200).json({status:true, data:result[0][0].city});
     })
     .catch((err) => 
     {
@@ -21,4 +27,4 @@ const selectCity = async (req,res) =>
     
 }
 
-module.exports = selectCity;
+module.exports = selectCity_patient;

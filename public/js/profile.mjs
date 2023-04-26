@@ -1,6 +1,7 @@
 var accountUser = null;
 var connectedContract = false;
-var list_doctors_have_access;
+var list_doctors_have_access =[];
+var city_patient = "";
 var table_doctors;
 var table_ills;
 import * as helper from '../utils/helpers.js';
@@ -309,17 +310,26 @@ async function fillTableDoctors()
         let data= result.data;
         for(let i =0;i<data.length;i++)
         {
-            if(list_doctors_have_access.indexOf(`${data[i].id}`) > -1)
+            if(list_doctors_have_access.length!==0)
             {
-                data[i].action = `
-                    <div class='btn-group'>
-                        <button class='btn btn-danger btn-sm' id='btn_action_revokeAccess'>Забрать доступ</button> `
+                if(list_doctors_have_access.indexOf(`${data[i].id}`) > -1)
+                {
+                    data[i].action = `
+                        <div class='btn-group'>
+                            <button class='btn btn-danger btn-sm' id='btn_action_revokeAccess'>Забрать доступ</button> `
+                }else
+                {
+                    data[i].action = `
+                        <div class='btn-group'>
+                            <button class='btn btn-info btn-sm' id='btn_action_giveAccess'>Дать доступ</button>`
+                }
             }else
             {
                 data[i].action = `
-                    <div class='btn-group'>
-                        <button class='btn btn-info btn-sm' id='btn_action_giveAccess'>Дать доступ</button>`
+                        <div class='btn-group'>
+                            <button class='btn btn-info btn-sm' id='btn_action_giveAccess'>Дать доступ</button>`
             }
+            
             data[i].action +=`<button class='btn btn-primary btn-sm' id='btn_moreInfo'>О враче</button>
             </div>`
         }
@@ -391,6 +401,7 @@ async function fillTableDoctors()
                 },
                 {
                     searchPanes: {
+                        show:true,
                         options: [
                             {
                                 label: 'Не имеет доступ',
@@ -548,7 +559,7 @@ async function fillTableIlls()
     .then(hashdata => hashdata.json())
     .then(result =>
     {
-        console.log(result);
+        //console.log(result);
         let data= result.data;
         for(let i =0;i<data.length;i++)
         {
@@ -620,7 +631,6 @@ async function fillTableIlls()
            
         });
 
-        //TODO Не реагирует
         // table_ills.searchPanes.container().prependTo(table_ills.table().container());
         // table_ills.searchPanes.resizePanes();
     })
