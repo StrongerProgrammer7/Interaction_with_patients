@@ -489,7 +489,7 @@ header
   justify-content: space-between!important;
 }
 
-#table_doctors
+#table_doctors #table_patients
 {
   width: 100%!important;
 }

@@ -298,3 +298,30 @@ input,select,option
 {
   width: 48%;
 }
+
+.form-check
+{
+  display: flex!important;
+  justify-content: center;
+  background-color: #0d6dfd5e;
+  border: 1px solid #0d6dfd5e;
+  border-radius: 25px;
+  width: 50%;
+}
+
+.form-check-label
+{
+  margin-left: 5px;
+  color:white;
+}
+
+.form__check_doctor_div
+{
+  display: flex;
+  justify-content: center;
+}
+
+#form label
+{
+  font-weight: bold;
+}

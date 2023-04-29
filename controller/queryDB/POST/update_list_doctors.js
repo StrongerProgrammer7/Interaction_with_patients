@@ -8,7 +8,7 @@ const update_list_doctors = async (req,res) =>
         list_doctors_have_access
     } = req.body;
      await mysql.promise().query(`UPDATE Patient
-     Set list_doctors_have_access = ?,
+     Set list_doctors_have_access = ?
      Where account_ethereum = ?
      `,[list_doctors_have_access,meta])
     .then(async (result,err) =>

@@ -21,8 +21,8 @@ window.addEventListener("DOMContentLoaded",async() =>
         {
             error.style.display = "none";       
             window.contract = await new window.web3.eth.Contract(ABI,addressContract);
-            console.log(window.contract._address);
-
+            //console.log(window.contract._address);
+            
             await fetch("/api/get_cities",
             {
                 method: 'GET',
@@ -34,10 +34,14 @@ window.addEventListener("DOMContentLoaded",async() =>
             {
 
                 let data = cities.data;
-                putCityToSelect('addressOfResidence',data);
-                putCityToSelect('addressRegistered',data);
+                fillSelectOptions('addressOfResidence',data,optionCities);
+                fillSelectOptions('addressRegistered',data,optionCities);
                 
             });
+            fillSelectByFetch("/api/get_contacts_doctors",fillSelectOptions,'contacts_id',optionContacts_doctors);
+            fillSelectByFetch("/api/get_hospitals",fillSelectOptions,'hospital_id',optionHospitals);
+            fillSelectByFetch("/api/get_all_categories_doctors",fillSelectOptions,'categories',optionCategory);
+            fillSelectByFetch("/api/get_all_profession_doctors",fillSelectOptions,'professions',optionProfession)
 
         } catch (error)
         {
@@ -66,17 +70,63 @@ window.addEventListener("DOMContentLoaded",async() =>
     
 });
 
-function putCityToSelect(parent,data)
+async function fillSelectByFetch(query,fillSelectOptions,parent,options)
+{
+    await fetch(query,
+    {
+        method: 'GET',
+        headers:
+        {
+            "Content-Type":"application/json"
+        }
+    }).then(hashFiles => hashFiles.json()).then(hospitals =>
+    {
+        let data = hospitals.data;
+        fillSelectOptions(parent,data,options);
+       
+    });
+}
+
+function fillSelectOptions(parent,data,optionElements)
 {
     for(let i=0;i<data.length;i++)
     {
         const option = document.createElement('option');
-        option.value = data[i].id;
-        option.textContent = `${data[i].region}:${data[i].city}`;
+        if(data[i].id===undefined)
+            option.value = optionElements(data[i]);
+        else
+            option.value = data[i].id;
+
+        option.textContent = optionElements(data[i]);
         option.selected = true; //TODO: Delete after test 
         document.getElementById(parent).appendChild(option);
         
     }
+}
+
+function optionCities(element)
+{
+    return `${element.region}:${element.city}`
+}
+
+function optionContacts_doctors(element)
+{
+    return `${element.office_phone}:${element.office_mail}`
+}
+
+function optionHospitals(element)
+{
+    return `${element.city}:${element.number_hospital}`
+}
+
+function optionCategory(element)
+{
+    return `${element.category}`
+}
+
+function optionProfession(element)
+{
+    return `${element.profession}`
 }
 
 document.getElementById("home").addEventListener("click", function()
@@ -175,8 +225,15 @@ async function registerPatient()
         addressRegistered: addressRegistered.value,
         insurancePolicy: insurancePolicy.value,    
         meta: accountUser, 
-        password:password.value
+        password:password.value,
+        isDoctor: isDoctor.checked,
+        contacts_id: contacts_id.value,
+        hospital_id: hospital_id.value,
+        category: categories.value,
+        profession: professions.value
+
     };
+
 
     if(checkData(registerData) == true)
     {
@@ -406,3 +463,31 @@ function messageError(text)
     error.style.display = "block";
     error.innerText = text;
 }
+
+document.getElementById('isDoctor').addEventListener('change',()=>
+{
+    let check = document.getElementById('isDoctor').checked;
+    if(check===true)
+    {
+        let divs = document.querySelectorAll('#address_contactsWork div');
+        divs[0].style.display = "none";
+        divs[1].style.display = "none";
+        divs[2].style.display = "block";
+        divs[3].style.display = "block";
+        document.getElementById('document_doctor').style.display="block";
+        document.getElementById('birthday').style.display="none";
+        document.getElementById('insurance_policy_patient').style.display="none";
+        document.getElementById('profession_categories').style.display="flex";
+    }else
+    {
+        let divs = document.querySelectorAll('#address_contactsWork div');
+        divs[2].style.display = "none";
+        divs[3].style.display = "none";
+        divs[0].style.display = "block";
+        divs[1].style.display = "block";
+        document.getElementById('document_doctor').style.display="none";
+        document.getElementById('birthday').style.display="block";
+        document.getElementById('insurance_policy_patient').style.display="block";
+        document.getElementById('profession_categories').style.display="none";
+    }
+})

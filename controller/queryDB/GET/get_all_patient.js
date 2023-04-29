@@ -14,17 +14,24 @@ const select_all_patients = async (req,res) =>
         }else
         {
             let all_patients = [];
-            for(const patient in result[0])
+
+            let patiens_data = result[0];
+            
+            for(let i=0;i<patiens_data.length;i++)
             {
+                //console.log(patiens_data[i]);
                 let patient_object = {};
-                patient_object.id = patient.id;
-                patient_object.initials = `${patient.surname} ${patient.name[0].toUpperCase()} ${patient.lastname[0].toUpperCase()}`;
-                patient_object.city = patient.city;
-                patient_object.mail = patient.mail;
-                patient_object.meta = patient.account_ethereum;
-                patient_object.list_doc_have_access_to_patient = patient.list_doc;
+                patient_object.num = i+1;
+                patient_object.id = patiens_data[i].id;
+                let lastname = patiens_data[i].lastname!==null && patiens_data[i].lastname!==''?`${patiens_data[i].lastname[0].toUpperCase()}.`: "";
+                patient_object.initials = `${patiens_data[i].surname} ${patiens_data[i].name[0].toUpperCase()}. ${lastname}`;
+                patient_object.mail = patiens_data[i].mail !== null? patiens_data[i].mail : "";
+                patient_object.city = patiens_data[i].city;
+                patient_object.meta = patiens_data[i].account_ethereum;
+                patient_object.list_doc_have_access_to_patient = patiens_data[i].list_doc;
                 all_patients.push(patient_object);
             }
+
             return res.status(200).json({data:all_patients,message:"Success"});
             
         }

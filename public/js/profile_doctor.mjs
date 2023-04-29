@@ -1,8 +1,8 @@
 var accountUser = null;
 var connectedContract = false;
-var list_doctors_have_access =[];
+var list_patients_giveAccess =[];
 var city_patient = "";
-var table_doctors;
+var table_patients;
 var table_ills;
 var table_actual_ills;
 
@@ -42,8 +42,8 @@ document.addEventListener("click", function(e)
             }
             if(e.target.id==="show_table_doctors")
             {
-                table_doctors.responsive.recalc();
-                table_doctors.columns.adjust().responsive.recalc();
+                table_patients.responsive.recalc();
+                table_patients.columns.adjust().responsive.recalc();
             }
             if(e.target.id ==="btn_moreInfo")
             {
@@ -78,45 +78,7 @@ document.addEventListener("click", function(e)
                 }
                 
             }
-            if(e.target.id=="btn_action_revokeAccess")
-            {
-                try 
-                {
-                    let data = table_doctors.row(e.target).data();
-                    console.log(data.id);
-                    console.log(data.initials);
-                    if(list_doctors_have_access.indexOf(`${data.id}`) > -1)
-                    {
-                        updateListDoctorsRevokeRole(data.id,data.meta,e.target);
-                        
-                    }else
-                    {   
-                        alert("You did not give access to the doctor ", data.initials);
-                    }
-
-                } catch (error) 
-                {
-                    console.log("Problem with revoke access!".error);    
-                }
-            }
-            if(e.target.id=="btn_action_giveAccess")
-            {
-                try 
-                {
-                    let data = table_doctors.row(e.target).data();
-                    if(list_doctors_have_access.indexOf(`${data.id}`) > -1)
-                    {
-                        alert("You already give access this doctor ", data.initials);
-                    }else
-                    {   
-                        updateListDoctorsGiveRole(data.id,data.meta,e.target);
-                    }
-
-                } catch (error) 
-                {
-                    console.log("Problem with give access!",error);    
-                }
-            }
+            
             
            
         }
@@ -170,37 +132,37 @@ const connectMetamask = async () =>
                 if(connectedContract==false)
                     connectContract();                           
 
-                await fetch("/api/get_list_doctors_haveAccess",
-                {
-                    method: 'POST',
-                    body: JSON.stringify({meta:accountUser}),
-                    headers:
-                    {
-                        "Content-Type":"application/json"
-                    }
-                }).then(hashFiles => hashFiles.json()).then(result =>
-                {
-                    list_doctors_have_access = result.data[0].list_doc.split(',');    
-                })
-                .catch(error=>console.log);
+                // await fetch("/api/get_list_doctors_haveAccess",
+                // {
+                //     method: 'POST',
+                //     body: JSON.stringify({meta:accountUser}),
+                //     headers:
+                //     {
+                //         "Content-Type":"application/json"
+                //     }
+                // }).then(hashFiles => hashFiles.json()).then(result =>
+                // {
+                //     list_doctors_have_access = result.data[0].list_doc.split(',');    
+                // })
+                // .catch(error=>console.log);
 
-                await fetch('/api/getCity',
-                {
-                    method: 'POST',
-                    body: JSON.stringify({meta:accountUser}),
-                    headers:
-                    {
-                        "Content-Type":"application/json"
-                    }
-                }).then(hashData => hashData.json())
-                .then(result =>
-                    {
-                       // console.log(result.data);
-                        city_patient = result;
-                    })
-                .catch(error => console.log);
+                // await fetch('/api/getCity',
+                // {
+                //     method: 'POST',
+                //     body: JSON.stringify({meta:accountUser}),
+                //     headers:
+                //     {
+                //         "Content-Type":"application/json"
+                //     }
+                // }).then(hashData => hashData.json())
+                // .then(result =>
+                //     {
+                //        // console.log(result.data);
+                //         city_patient = result;
+                //     })
+                // .catch(error => console.log);
 
-                fillTableDoctors();
+                fillTablePatients();
                 fillTableIlls();
                 fillFormPersonalData();
                 
@@ -336,34 +298,25 @@ function addActionForListDoctors(data)
 {
     for(let i =0;i<data.length;i++)
     {
-        if(list_doctors_have_access.length!==0)
+        if(list_patients_giveAccess.length!==0)
         {
-            if(list_doctors_have_access.indexOf(`${data[i].id}`) > -1)
+            if(list_patients_giveAccess.indexOf(`${data[i].id}`) > -1)
             {
                 data[i].action = `
                     <div class='btn-group'>
-                        <button class='btn btn-danger btn-sm' id='btn_action_revokeAccess'>Забрать доступ</button> `
-            }else
-            {
-                data[i].action = `
-                    <div class='btn-group'>
-                        <button class='btn btn-info btn-sm' id='btn_action_giveAccess'>Дать доступ</button>`
+                        <button class='btn btn-danger btn-sm' id='btn_action_setDiagnosis'>Назначить диагноз</button> `
             }
-        }else
-        {
-            data[i].action = `
-                    <div class='btn-group'>
-                        <button class='btn btn-info btn-sm' id='btn_action_giveAccess'>Дать доступ</button>`
         }
+
         
-        data[i].action +=`<button class='btn btn-primary btn-sm' id='btn_moreInfo'>О враче</button>
+        data[i].action =`<button class='btn btn-primary btn-sm' id='btn_moreInfo'>О пациенте</button>
         </div>`
     }
     return data;
 }
-async function fillTableDoctors()
+async function fillTablePatients()
 {
-    await fetch('/api/get_all_doctors')
+    await fetch('/api/get_all_patients')
     .then(hashdata => hashdata.json())
     .then(result =>
     {
@@ -373,7 +326,7 @@ async function fillTableDoctors()
     })
     .then(list_doctors =>
     {
-        table_doctors = new DataTable('#table_doctors',
+        table_patients = new DataTable('#table_patients',
         {
             responsive: true,
             data: list_doctors,
@@ -381,9 +334,9 @@ async function fillTableDoctors()
                 { data: "num"},
                 { data: 'initials' },
                 { data: 'mail'},
-                { data: 'profession' },
                 { data: 'city' },
                 { data: 'action'},
+                { data: 'list_doc_have_access_to_patient'},
                 { data: 'id'},
                 { data: 'meta'}
             ],
@@ -403,12 +356,12 @@ async function fillTableDoctors()
                 collapse: true,
                 initCollapsed: true,
                 layout: 'columns-3',
-                preSelect:[
-                    {
-                        column:4,
-                        rows: [city_patient]
-                    }
-                ]
+                // preSelect:[
+                //     {
+                //         column:4,
+                //         rows: [city_patient]
+                //     }
+                // ]
             },
             dom: 'Plfrtip',
             columnDefs:[
@@ -426,7 +379,7 @@ async function fillTableDoctors()
                     {
                         show:true
                     },
-                    targets:[3,4]
+                    targets:[3]
                 },
                 {
                     searchPanes:
@@ -440,21 +393,37 @@ async function fillTableDoctors()
                         show:true,
                         options: [
                             {
-                                label: 'Не имеет доступ',
+                                label: 'Назначить диагноз',
                                 value: function(rowData, rowIdx) 
                                 {
-                                    return rowData.action.includes('Дать доступ');
-                                }
-                            },
-                            {
-                                label: 'Имеет доступ',
-                                value: function(rowData, rowIdx) 
-                                {
-                                    return rowData.action.includes('Забрать доступ');
+                                    return rowData.action.includes('Назначить диагноз');
                                 }
                             }
+                            // {
+                            //     label: 'Имеет доступ',
+                            //     value: function(rowData, rowIdx) 
+                            //     {
+                            //         return rowData.action.includes('Забрать доступ');
+                            //     }
+                            // }
                         ]
                        // className: 'bord'
+                    },
+                    targets: [4]
+                },
+                {
+                    searchPanes: {
+                        show:true,
+                        options: [
+                            {
+                                label: 'Имеется доступ',
+                                value: function(rowData, rowIdx) 
+                                {
+                                    return rowData.action.includes('61');
+                                }
+                            }
+                       
+                        ]
                     },
                     targets: [5]
                 }
@@ -481,7 +450,7 @@ async function fillTableDoctors()
            
         });
 
-        console.log(table_doctors.data().length);
+       // console.log(table_patients.data().length);
         // table_doctors.searchPanes.container().prependTo(table_doctors.table().container());
         // table_doctors.searchPanes.resizePanes();
     })
@@ -490,7 +459,7 @@ async function fillTableDoctors()
 
 }
 
-async function updateListDoctorsGiveRole(id_doctor,meta_doctor,button)
+async function isAccess(id_doctor,meta_doctor,button)
 {
     if(id_doctor !== null && id_doctor !== undefined && id_doctor != "" && meta_doctor !== null && meta_doctor !== undefined && meta_doctor != "")
     {
@@ -508,8 +477,8 @@ async function updateListDoctorsGiveRole(id_doctor,meta_doctor,button)
         })
         .then(async () =>
         {
-            list_doctors_have_access.push(`${id_doctor}`);
-            let temp_list = list_doctors_have_access.toString();
+            list_patients_giveAccess.push(`${id_doctor}`);
+            let temp_list = list_patients_giveAccess.toString();
             updateDB(temp_list,button);
         })
         .catch((err) =>
@@ -539,8 +508,8 @@ async function updateListDoctorsRevokeRole(id_doctor,meta_doctor,button)
         })
         .then(async () =>
         {
-            list_doctors_have_access.splice(list_doctors_have_access.indexOf(`${id_doctor}`),1);
-            let temp_list = list_doctors_have_access.toString();
+            list_patients_giveAccess.splice(list_patients_giveAccess.indexOf(`${id_doctor}`),1);
+            let temp_list = list_patients_giveAccess.toString();
             updateDB(temp_list,button);
         })
         .catch((err) =>
@@ -571,8 +540,8 @@ async function updateDB(list_doctors,button)
                     button.classList.add('btn-danger');
                     button.id= 'btn_action_revokeAccess';
                     button.textContent = "Забрать доступ";
-                    addActionForListDoctors(table_doctors.data());
-                    table_doctors.draw();
+                    addActionForListDoctors(table_patients.data());
+                    table_patients.draw();
    
                 }else
                 {
@@ -580,8 +549,8 @@ async function updateDB(list_doctors,button)
                     button.classList.remove('btn-danger');
                     button.id= 'btn_action_giveAccess';
                     button.textContent = "Дать доступ";
-                    addActionForListDoctors(table_doctors.data());
-                    table_doctors.draw();
+                    addActionForListDoctors(table_patients.data());
+                    table_patients.draw();
                 }
             })
             .catch(error=>console.log("Error with DB",error));

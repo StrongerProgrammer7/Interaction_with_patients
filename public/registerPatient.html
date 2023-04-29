@@ -54,7 +54,7 @@
             <p class="warning">Если есть отчество: <br>Не используйте пробел или спец символы</p>
           </div>
         </div>
-        <div class="d-flex justify-content-evenly">
+        <div class="d-flex justify-content-evenly" id="address_contactsWork">
           <div class="mb-3">
             <label for="addressOfResidence" class="form-label">Адрес проживания</label>
             <select class="form-control" name="cities" id="addressOfResidence" required>
@@ -64,6 +64,32 @@
           <div class="mb-3">
             <label for="addressRegistered" class="form-label">Адрес по прописке</label>
             <select class="form-control" name="cities" id="addressRegistered" required>
+              <option value="">--Please choose an option--</option>
+            </select>
+          </div>
+          <div class="mb-3" style="display:none">
+            <label for="contacts_id" class="form-label">Контакт</label>
+            <select class="form-control" name="contacts_doctors" id="contacts_id" required>
+              <option value="">--Please choose an option--</option>
+            </select>
+          </div>
+          <div class="mb-3" style="display:none">
+            <label for="hospital_id" class="form-label">Больница</label>
+            <select class="form-control" name="hospitals" id="hospital_id" required>
+              <option value="">--Please choose an option--</option>
+            </select>
+          </div>
+        </div>
+        <div class="justify-content-evenly" id="profession_categories" style="display:none">
+          <div class="mb-3">
+            <label for="categories" class="form-label">Категория</label>
+            <select class="form-control" name="category" id="categories" required>
+              <option value="">--Please choose an option--</option>
+            </select>
+          </div>
+          <div class="mb-3" >
+            <label for="professions" class="form-label">Специальность</label>
+            <select class="form-control" name="profession" id="professions" required>
               <option value="">--Please choose an option--</option>
             </select>
           </div>
@@ -77,13 +103,12 @@
             <label for="mailPatient" class="form-label">Почта</label>
             <input type="email" class="form-control" id="mailPatient" value="mail@mail.ru">
           </div>
-          <div class="mb-3">
+          <div class="mb-3" id="birthday">
             <label for="bdateId" class="form-label">Дата рождения</label>
             <input type="date" class="form-control text-center" id="bdateId" required value="1999-06-22">
           </div>
-        </div>
-        
-        <div class="mb-3">
+        </div>  
+        <div class="mb-3" id="insurance_policy_patient">
           <label for="insurancePolicy" class="form-label">Страховой полис</label>
           <input type="text" class="form-control" id="insurancePolicy" required value="195-1586-649-649">
         </div>
@@ -101,11 +126,19 @@
             <input type="password"  autocomplete="new-password" class="form-control" id="password_repeat" value="+JwfM8b*4x3^^BC*jIK" required>
           </div>
         </div>
-        <div class="mb-3">
+        <div class="mb-3" id="document_doctor" style="display: none;">
           <label for="formFileSm" class="form-label">Подтверждающий документ</label>
           <input class="form-control form-control-sm" id="formFileSm" type="file">
           <p class="warning">Если вы являетесь врачом: <br>Приложите подтверждающий документ</p>
         </div>
+         <div class="form__check_doctor_div">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="isDoctor">
+              <label class="form-check-label" for="isDoctor">
+                Регистрация для доктора
+              </label>
+          </div>
+         </div>
         <button type="submit" class="btn btn-info" id="btn-open-form" style="color:wheat">Зарегистрироваться!</button>
       </form>
     </div>

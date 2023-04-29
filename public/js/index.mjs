@@ -225,7 +225,8 @@ document.getElementById("btn_sign_up").addEventListener("click", async function(
 {
     const logged = {
         meta:accountUser,
-        pass:password.value
+        pass:password.value,
+        isDoctor: isDoctor.checked
     }
     await fetch("/api/login",
     {
@@ -242,7 +243,10 @@ document.getElementById("btn_sign_up").addEventListener("click", async function(
         console.log(data);
        if(data.status===true)
        {
-            window.open("/profile",'_self');
+            if(isDoctor.checked === false)
+                window.open("/profile",'_self');
+            else
+                window.open("/profile_doctor",'_self');
        }else
        {
             console.log('Incorrect password');
@@ -360,7 +364,7 @@ const connectMetamask = async () =>
                     let btn  = helper.createBtn("downloadFiles","block","btnDownloadLinks","Download links ipfs!");
                     btn.style.width="240px";
                 }*/
-            await fetch("/api/checkWereRegistered",
+            await fetch("/api/isExistsPatient_Doctor",
             {
                 method: 'POST',
                 body: JSON.stringify({meta:accountUser}),
@@ -375,10 +379,25 @@ const connectMetamask = async () =>
                 console.log(data);
                 if(data.status === true)
                 {
-                    document.getElementById("links__registerId").style.display = "inline-block";
+                    if(data.data.doctor === true && data.data.patient === true)
+                    {
+                        document.getElementById("isDoctor").enabled = true;
+                    }
+                    if(data.data.doctor === false && data.data.patient === true)
+                    {
+                        document.getElementById("links__registerId").style.display = "inline-block";
+                    }
+                    if(data.data.doctor === true && data.data.patient === false)
+                    {
+                        document.getElementById("links__registerId").style.display = "inline-block";
+                        document.getElementById("isDoctor").checked = true;
+                    }
+                    document.getElementById("btn_open_model_pass").style.display = "inline-block";
+
+                    
                 }else
                 {
-                    document.getElementById("btn_open_model_pass").style.display = "inline-block";
+                    document.getElementById("links__registerId").style.display = "inline-block";
                 }
             })
             .catch(error =>
