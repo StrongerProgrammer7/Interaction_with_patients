@@ -1,10 +1,10 @@
 var accountUser = null;
 var connectedContract = false;
 var list_patients_giveAccess =[];
-var city_patient = "";
+
 var table_patients;
 var table_ills;
-var table_actual_ills;
+
 
 import * as helper from '../utils/helpers.js';
 
@@ -40,7 +40,7 @@ document.addEventListener("click", function(e)
                 // table_ills.draw();
                  table_ills.columns.adjust().responsive.recalc();
             }
-            if(e.target.id==="show_table_doctors")
+            if(e.target.id==="show_table_patients")
             {
                 table_patients.responsive.recalc();
                 table_patients.columns.adjust().responsive.recalc();
@@ -78,8 +78,7 @@ document.addEventListener("click", function(e)
                 }
                 
             }
-            
-            
+           
            
         }
     } catch (error) 
@@ -91,6 +90,91 @@ document.addEventListener("click", function(e)
     
 });
 
+$('#table_patients tbody').on('click','tr', function (e) 
+{ 
+    if(e.target.id=="btn_action_setDiagnosis")
+    {
+        try 
+        {
+            let data = table_patients.row( this ).data();
+            document.querySelectorAll(`#form_setDiagnosis #form-setDiagnosis__status`)[0].style.display ='none';
+            
+            //isAccess(data.meta);
+            $('#modal_setDiagnosis').modal('show');
+            $('#form_setDiagnosis #id_patient')[0].value = data.id;
+            document.querySelectorAll(`#form_setDiagnosis #btn_setDiagnosis`)[0].textContent = "Поставить диагноз"
+            console.log($('#form_setDiagnosis #id_patient')[0].value)
+            
+            
+        } catch (error) 
+        {
+            console.log("Problem with setDiagnosis!",error);    
+        }
+    }
+
+    if(e.target.id=="btn_moreInfo")
+    {
+        console.log("More info");
+    }
+    
+
+});
+
+$('#table_ills tbody').on('click','tr','ul li', function (e) 
+{ 
+    if(e.target.id=="btn_changeDiagnosis")
+    {
+        try 
+        {
+            let data = table_ills.row( e.target ).data();
+            console.log(data);
+            document.querySelectorAll(`#form_setDiagnosis #form-setDiagnosis__status`)[0].style.display ='flex';
+            //isAccess(data.meta);
+            $('#modal_setDiagnosis').modal('show');
+            
+            setTimeout(()=>
+            {
+                if(document.getElementById('modal_setDiagnosis').classList.contains('show')===true)
+                {
+                    fillFormChangeDiagnosisPatient(data);
+                    const select = document.querySelectorAll('#form_setDiagnosis #name_ills');
+                    const options = Array.from(select[0].options);
+                    const input = document.querySelector('#form_setDiagnosis #filter_by_name');
+                    function findMatches (search, options) 
+                    {
+                      return options.filter(option => {
+                        const regex = new RegExp(search, 'gi');
+                        return option.text.match(regex);
+                      });
+                    }
+                    function filterOptions () 
+                    {
+                      options.forEach(option => { 
+                        option.remove();
+                        option.selected = false;
+                      });
+                      console.log(this.value);
+                      const matchArray = findMatches(this.value, options);
+                      select[0].append(...matchArray);
+                    }
+                    
+                    input.addEventListener('change', filterOptions);
+                    input.addEventListener('keyup', filterOptions);
+                }
+            },400)
+        } catch (error) 
+        {
+            console.log("Problem with setDiagnosis!",error);    
+        }
+    }
+
+    if(e.target.id=="btn_moreInfo_ill")
+    {
+        console.log("More info");
+    }
+    
+
+});
 
 document.getElementById("switch__buttonThree").addEventListener("click",function()
 {
@@ -132,52 +216,10 @@ const connectMetamask = async () =>
                 if(connectedContract==false)
                     connectContract();                           
 
-                // await fetch("/api/get_list_doctors_haveAccess",
-                // {
-                //     method: 'POST',
-                //     body: JSON.stringify({meta:accountUser}),
-                //     headers:
-                //     {
-                //         "Content-Type":"application/json"
-                //     }
-                // }).then(hashFiles => hashFiles.json()).then(result =>
-                // {
-                //     list_doctors_have_access = result.data[0].list_doc.split(',');    
-                // })
-                // .catch(error=>console.log);
-
-                // await fetch('/api/getCity',
-                // {
-                //     method: 'POST',
-                //     body: JSON.stringify({meta:accountUser}),
-                //     headers:
-                //     {
-                //         "Content-Type":"application/json"
-                //     }
-                // }).then(hashData => hashData.json())
-                // .then(result =>
-                //     {
-                //        // console.log(result.data);
-                //         city_patient = result;
-                //     })
-                // .catch(error => console.log);
-
                 fillTablePatients();
                 fillTableIlls();
                 fillFormPersonalData();
-                
-                /*if(document.getElementById("historyPatient").style.display == "none")
-                {
-                    let btn = helper.createBtn("historyPatient","block","btnGetHistoryPatient","Get patient's history");
-                    btn.style.width="240px";
-                }*/
-
-                /*if(document.getElementById("downloadFiles").style.display == "none")
-                {
-                    let btn  = helper.createBtn("downloadFiles","block","btnDownloadLinks","Download links ipfs!");
-                    btn.style.width="240px";
-                }*/
-
+                fillFormSetDiagnosis();
 
             }else
             {
@@ -205,7 +247,6 @@ const connectMetamask = async () =>
         showProblem("account","problems_withAccount","Не обнаружен web3 или кросчейн-кошелек MetaMask! Пожалуйста установите соответствующие расширение для браузера и попробуйте снова!","Повторное соединение","btnSwitch");
     }
 }
-
 
 
 const connectContract = async () =>
@@ -298,19 +339,18 @@ function addActionForListDoctors(data)
 {
     for(let i =0;i<data.length;i++)
     {
-        if(list_patients_giveAccess.length!==0)
+       // console.log(data[i])
+        data[i].action = `
+        <div class='btn-group'>`;
+        if(data[i].list_doc_have_access_to_patient!==null)
         {
-            if(list_patients_giveAccess.indexOf(`${data[i].id}`) > -1)
+            
+            if(data[i].list_doc_have_access_to_patient.indexOf(`61`) > -1)
             {
-                data[i].action = `
-                    <div class='btn-group'>
-                        <button class='btn btn-danger btn-sm' id='btn_action_setDiagnosis'>Назначить диагноз</button> `
+                data[i].action += `<button class='btn btn-success btn-sm' id='btn_action_setDiagnosis'>Назначить диагноз</button>`
             }
         }
-
-        
-        data[i].action =`<button class='btn btn-primary btn-sm' id='btn_moreInfo'>О пациенте</button>
-        </div>`
+        data[i].action +=`<button class='btn btn-primary btn-sm' id='btn_moreInfo'>О пациенте</button></div>`
     }
     return data;
 }
@@ -324,12 +364,12 @@ async function fillTablePatients()
 
         return addActionForListDoctors(data);
     })
-    .then(list_doctors =>
+    .then(list_patietns =>
     {
         table_patients = new DataTable('#table_patients',
         {
             responsive: true,
-            data: list_doctors,
+            data: list_patietns,
             columns: [
                 { data: "num"},
                 { data: 'initials' },
@@ -379,7 +419,7 @@ async function fillTablePatients()
                     {
                         show:true
                     },
-                    targets:[3]
+                    targets:[3,5]
                 },
                 {
                     searchPanes:
@@ -411,22 +451,27 @@ async function fillTablePatients()
                     },
                     targets: [4]
                 },
-                {
-                    searchPanes: {
-                        show:true,
-                        options: [
-                            {
-                                label: 'Имеется доступ',
-                                value: function(rowData, rowIdx) 
-                                {
-                                    return rowData.action.includes('61');
-                                }
-                            }
+                // {
+                //     searchPanes: {
+                //         show:true,
+                //         options: [
+                //             {
+                //                 label: 'Имеется доступ',
+                //                 value: function(rowData, rowIdx) 
+                //                 {
+                //                     if(rowData.list_doc_have_access_to_patient !== null)
+                //                         {
+                //                             //console.log(rowData.list_doc_have_access_to_patient);
+                //                             return rowData.list_doc_have_access_to_patient.includes('61')
+                //                         }
+                //                     return;
+                //                 }
+                //             }
                        
-                        ]
-                    },
-                    targets: [5]
-                }
+                //         ]
+                //     },
+                //     targets: [5]
+                // }
                 
             ],
         
@@ -459,67 +504,42 @@ async function fillTablePatients()
 
 }
 
-async function isAccess(id_doctor,meta_doctor,button)
+async function isAccess(meta_patient)
 {
-    if(id_doctor !== null && id_doctor !== undefined && id_doctor != "" && meta_doctor !== null && meta_doctor !== undefined && meta_doctor != "")
+    console.log(meta_patient);
+    if(meta_patient !== null && meta_patient !== undefined && meta_patient != "")
     {
-        await window.contract.methods.giveRole(meta_doctor).send({from :accountUser}).then((res) =>
+        await window.contract.methods.checkAccess(meta_patient)
+        .call({from :accountUser})
+        .then(isAccess =>
         {
-           // console.log(res);
+            if(isAccess===true)
+            {
+                $('#modal_setDiagnosis').modal('show');
+                
+                console.log("You have access")
+            }else
+            {
+                console.log("You don't have access")
+                return false;
+                
+            }
             window.contract.getPastEvents("allEvents",
             {                               
                 fromBlock: 'latest',     
                 toBlock: 'latest'     
-            })
-            .then((events) => console.log(events))
-            .catch((err) => console.error(err));
-            
+            }).then((events) => console.log(events[0].returnValues))
+            .catch((err) =>console.error(err));
         })
-        .then(async () =>
+        .catch((error)=>
         {
-            list_patients_giveAccess.push(`${id_doctor}`);
-            let temp_list = list_patients_giveAccess.toString();
-            updateDB(temp_list,button);
-        })
-        .catch((err) =>
-        {
-            console.log('Error with contract or user denied',err);
+            console.log("error",error);
         });
-       
+        
     }       
     
 }
 
-async function updateListDoctorsRevokeRole(id_doctor,meta_doctor,button)
-{
-    if(id_doctor !== null && id_doctor !== undefined && id_doctor != "" && meta_doctor !== null && meta_doctor !== undefined && meta_doctor != "")
-    {
-        await window.contract.methods.anualRole(meta_doctor).send({from :accountUser}).then((res) =>
-        {
-            console.log(res);
-            window.contract.getPastEvents("allEvents",
-            {                               
-                fromBlock: 'latest',     
-                toBlock: 'latest'     
-            })
-            .then((events) => console.log(events))
-            .catch((err) => console.error(err));
-            
-        })
-        .then(async () =>
-        {
-            list_patients_giveAccess.splice(list_patients_giveAccess.indexOf(`${id_doctor}`),1);
-            let temp_list = list_patients_giveAccess.toString();
-            updateDB(temp_list,button);
-        })
-        .catch((err) =>
-        {
-            console.log('Error with contract or user denied',err);
-        });
-       
-    }       
-    
-}
 
 async function updateDB(list_doctors,button)
 {
@@ -562,7 +582,7 @@ async function fillTableIlls()
     await fetch("/api/get_all_ill_s_patient",
     {
         method: 'POST',
-        body: JSON.stringify({meta:accountUser}),
+        body: JSON.stringify({meta:accountUser,queryDoctor:true}),
         headers:
         {
             "Content-Type":"application/json"
@@ -573,10 +593,27 @@ async function fillTableIlls()
     {
         //console.log(result);
         let data= result.data;
+        let options_dd_mm_yyyy = {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric'
+            //timezone: 'UTC',
+        };
+
         for(let i =0;i<data.length;i++)
         {
             data[i].num = i+1;
-            data[i].action = `<button class='btn btn-info btn-sm' id='btn_moreInfo_ill'>Больше информации</button>`
+            data[i].action = `<div class='btn-group'>`
+            
+            if(data[i].status.includes('ill')===true)
+                data[i].action += `<button class='btn btn-primary btn-sm' id='btn_changeDiagnosis'>Изменить диагноз</button>`
+            if(data[i].date_cured!== "" && data[i].date_cured!== undefined && data[i].date_cured!==null)
+                data[i].date_cured = `${ (new Date(data[i].date_cured)).toISOString().slice(0,10)}`
+            if(data[i].date_ill!== "" && data[i].date_ill!==undefined && data[i].date_ill!==null)
+                data[i].date_ill = `${ (new Date(data[i].date_ill)).toISOString().slice(0,10)}`
+
+            data[i].action += `<button class='btn btn-info btn-sm' id='btn_moreInfo_ill'>Больше информации</button>`
+            data[i].action += `</div>`
         }
         return data;
     })
@@ -592,6 +629,7 @@ async function fillTableIlls()
             data: list_ills,
             columns: [
                 { data: "num"},
+                { data: "surname"},
                 { data: 'name_ill' },
                 { data: 'treatment'},
                 { data: 'classification' },
@@ -599,7 +637,8 @@ async function fillTableIlls()
                 { data: 'date_cured'},
                 { data: 'status'},
                 { data: 'action'},
-                { data: 'id'}
+                { data: 'id'},
+                { data: 'id_patient'}
             ],
         
             searchPanes: 
@@ -612,27 +651,27 @@ async function fillTableIlls()
                 viewCount: true,
                 collapse: true,
                 initCollapsed: true,
-                layout: 'columns-2',
+                layout: 'columns-3',
             },
             dom: 'Plfrtip',
             columnDefs:[
                 {
                     sClass: "hide_columns",
-                    aTargets: [8]
+                    aTargets: [9,10]
                 },
                 {
                     searchPanes:
                     {
                         show:true
                     },
-                    targets:[3,6]
+                    targets:[4,7]
                 },
                 {
                     searchPanes:
                     {
                         show:false
                     },
-                    targets:[0,1,2,4,5,7]
+                    targets:[0,1,2,3,5,6,8]
                 }
                 
             ],
@@ -644,45 +683,46 @@ async function fillTableIlls()
         });
 
 
-        table_actual_ills = new DataTable('#table_actual_ills',
-        {
-            responsive: true,
-            initComplete: function() {
-                //Show datatable when load complete
-                $('#table_actual_ills').show();
-            },
-            data: list_ills,
-            columns: [
-                { data: "num"},
-                { data: 'name_ill' },
-                { data: 'treatment'}
-            ],
-            columnDefs:
-            [
-                {
-                    className: 'red_color_text',
-                    target: 0
-                }
+        // table_actual_ills = new DataTable('#table_actual_ills',
+        // {
+        //     responsive: true,
+        //     initComplete: function() {
+        //         //Show datatable when load complete
+        //         $('#table_actual_ills').show();
+        //     },
+        //     data: list_ills,
+        //     columns: [
+        //         { data: "num"},
+        //         { data: 'name_ill' },
+        //         { data: 'treatment'}
+        //     ],
+        //     columnDefs:
+        //     [
+        //         {
+        //             className: 'red_color_text',
+        //             target: 0
+        //         }
                 
-            ],
-            // rowCallback: function(row,data,index)
-            // {
-            //     if(data.status.includes('ill') !== true && data.status.includes('Болен') !== true)
-            //         jQuery(row).remove();
-            // },
-            scrollY: 300,
-            scrollX: 100,
-            deferRender: true,
-            scroller: true
+        //     ],
+        //     // rowCallback: function(row,data,index)
+        //     // {
+        //     //     if(data.status.includes('ill') !== true && data.status.includes('Болен') !== true)
+        //     //         jQuery(row).remove();
+        //     // },
+        //     scrollY: 300,
+        //     scrollX: 100,
+        //     deferRender: true,
+        //     scroller: true
            
-        });
-        table_actual_ills
-        .rows( function ( idx, data, node ) 
-        {
-            return (data.status.includes('ill') !== true && data.status.includes('Болен') !== true);
-        }).remove().draw();
-        table_actual_ills.responsive.recalc();
-        table_actual_ills.columns.adjust().responsive.recalc();
+        // });
+        // table_actual_ills
+        // .rows( function ( idx, data, node ) 
+        // {
+        //     return (data.status.includes('ill') !== true && data.status.includes('Болен') !== true);
+        // }).remove().draw();
+        // table_actual_ills.responsive.recalc();
+        // table_actual_ills.columns.adjust().responsive.recalc();
+
         // table_ills.searchPanes.container().prependTo(table_ills.table().container());
         // table_ills.searchPanes.resizePanes();
     })
@@ -694,7 +734,7 @@ async function fillTableIlls()
 async function fillFormPersonalData()
 {
     Promise.all([
-        await fetch("/api/get_cities",
+        await fetch("/api/get_contacts_doctors",
         {
             method: 'GET',
             headers:
@@ -702,7 +742,34 @@ async function fillFormPersonalData()
                 "Content-Type":"application/json"
             }
         }).then(hashFiles => hashFiles.json()),
-        await fetch("/api/get_all_personalInfo_patient",
+        await fetch("/api/get_all_categories_doctors",
+        {
+            method: 'GET',
+            headers:
+            {
+                "Content-Type":"application/json"
+            }
+        })
+        .then(hashdata => hashdata.json()),
+        await fetch("/api/get_hospitals",
+        {
+            method: 'GET',
+            headers:
+            {
+                "Content-Type":"application/json"
+            }
+        })
+        .then(hashdata => hashdata.json()),
+        await fetch("/api/get_all_profession_doctors",
+        {
+            method: 'GET',
+            headers:
+            {
+                "Content-Type":"application/json"
+            }
+        })
+        .then(hashdata => hashdata.json()),
+        await fetch("/api/get_all_personalInfo_doctor",
         {
             method: 'POST',
             body: JSON.stringify({meta:accountUser}),
@@ -716,66 +783,142 @@ async function fillFormPersonalData()
     .then(result =>
         {
            // console.log(result);
-            let cities = result[0].data;
-            putCityToSelect('addressOfResidence',cities);
-            putCityToSelect('addressRegistered',cities);
-
-            let data = result[1].data[0];
+            let contacts = result[0].data;
+            let categories = result[1].data;
+            let hospitals = result[2].data;
+            let professions = result[3].data;
+            let doctor = result[4].data[0];
+      
+            fillSelectOptions('contacts_id',contacts,optionContacts_doctors);
+            fillSelectOptions('categories',categories,optionCategory);
+            fillSelectOptions('hospital_id',hospitals,optionHospitals);
+            fillSelectOptions('professions',professions,optionProfession);
+            
+ 
             //console.log(data);
-            nameId.value = data.name;
-            surnameId.value = data.surname;
-            lastnameId.value = data.lastname;
-            var options_dd_mm_yyyy = {
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric'
-                //timezone: 'UTC',
-            };
+            nameId.value = doctor.name;
+            surnameId.value = doctor.surname;
+            lastnameId.value = doctor.lastname;
 
-            let birthday = `${ (new Date(data.datebirthd)).toISOString().slice(0,10)}`
-            bdateId.value = birthday;
-
-            phonePatient.value = data.phone;
-            mailPatient.value = data.mail;
-            const addressRegistered = document.getElementById('addressRegistered').getElementsByTagName('option');
-            const addressResidence = document.getElementById('addressOfResidence').getElementsByTagName('option');
-            let count_city_personal_data = 0;
-            for(let i=0;i<addressRegistered.length;i++)
-            {
-                if(addressRegistered[i].text.includes(data.city) === true )
-                {
-                    addressRegistered[i].selected =true;
-                    count_city_personal_data++;
-                }
-                if(addressResidence[i].text.includes(data.addressResidence) === true)
-                {
-                    addressResidence[i].selected =true;
-                    count_city_personal_data++;
-                }
-                //console.log(addressRegistered[i].text);
-                if(count_city_personal_data===2)
-                    break;
-            }
-            insurancePolicy.value =data.insurance_policy;    
+            phoneDoctor.value = doctor.phone;
+            mailDoctor.value = doctor.mail;
+            selectedOption('#professions',doctor.profession);
+            selectedOption('#contacts_id',doctor.contacts_id);
+            selectedOption('#hospital_id',doctor.hospital_id);
+            selectedOption('#categories',doctor.category);
             meta.value = accountUser; 
+            
         })
         .catch(error=>console.log(error))
 
     
 }
 
-function putCityToSelect(parent,data)
+async function fillFormSetDiagnosis()
+{
+    Promise.all([
+        await fetch("/api/get_all_classificationIlls",
+        {
+            method: 'GET',
+            headers:
+            {
+                "Content-Type":"application/json"
+            }
+        }).then(hashFiles => hashFiles.json()),
+        await fetch("/api/get_all_name_ills",
+        {
+            method: 'GET',
+            headers:
+            {
+                "Content-Type":"application/json"
+            }
+        })
+        .then(hashdata => hashdata.json()),
+    ])
+    .then(result =>
+        {
+           // console.log(result);
+            let name_ill = result[1].data;
+            let classification = result[0].data;
+      
+            fillSelectOptions('name_ills',name_ill,optionNameIll);
+            fillSelectOptions('classification',classification,optionClassification);
+            
+            $('#form_setDiagnosis #meta').value = accountUser; 
+            
+        })
+        .catch(error=>console.log(error))
+
+    
+}
+
+function fillFormChangeDiagnosisPatient(data_illPatient)
+{
+    $('#form_setDiagnosis #id_patient')[0].value = data_illPatient.id;
+    $('#form_setDiagnosis #name_ill')[0].value = data_illPatient.name_ill;
+    $('#form_setDiagnosis #treatment')[0].value = data_illPatient.treatment;
+    $('#form_setDiagnosis #data_ill')[0].value = data_illPatient.date_ill;
+    $('#form_setDiagnosis #data_cured')[0].value = data_illPatient.date_cured;
+    $('#form_setDiagnosis #id_ill')[0].value = data_illPatient.id;
+    $('#form_setDiagnosis #statusIll')[0].value = data_illPatient.status;
+    selectedOption('#form_setDiagnosis #classification',data_illPatient.classification);
+    selectedOption('#form_setDiagnosis #name_ills',data_illPatient.name_ill);
+    document.querySelectorAll(`#form_setDiagnosis #meta`)[0].value = accountUser;
+    document.querySelectorAll(`#form_setDiagnosis #btn_setDiagnosis`)[0].textContent = "Изменить данные"
+}
+
+
+function fillSelectOptions(parent,data,optionElements)
 {
     for(let i=0;i<data.length;i++)
     {
         const option = document.createElement('option');
-        option.value = data[i].id;
-        option.textContent = `${data[i].region}:${data[i].city}`;
+        if(data[i].id===undefined)
+            option.value = optionElements(data[i]);
+        else
+            option.value = data[i].id;
+
+        option.textContent = optionElements(data[i]);
         document.getElementById(parent).appendChild(option);
         
     }
 }
 
+function selectedOption(parent_id,value)
+{
+    if(document.querySelectorAll(`${parent_id}`)[0].querySelector(`[value="${value}"]`)!==null)
+    {
+        document.querySelectorAll(`${parent_id}`)[0].querySelector(`[value="${value}"]`).selected = true
+    }
+}
+
+function optionContacts_doctors(element)
+{
+    return `${element.office_phone}:${element.office_mail}`
+}
+
+function optionHospitals(element)
+{
+    return `${element.city}:${element.number_hospital}`
+}
+
+function optionCategory(element)
+{
+    return `${element.category}`
+}
+
+function optionProfession(element)
+{
+    return `${element.profession}`
+}
+function optionNameIll(element)
+{
+    return `${element.name_ill}`
+}
+function optionClassification(element)
+{
+    return `${element.classification}`
+}
 
 document.getElementById('form_change_personalData').addEventListener("submit", async function()
 {
@@ -784,29 +927,29 @@ document.getElementById('form_change_personalData').addEventListener("submit", a
         name: nameId.value,
         surname: surnameId.value,
         lastname: lastnameId.value,
-        datebirthd: bdateId.value,
+        professions: professions.value,
         phone:phonePatient.value,
         mail:mailPatient.value,
-        address_of_residence: addressOfResidence.value,
-        city_id: addressRegistered.value,
-        insurance_policy: insurancePolicy.value,    
+        contacts_id: contacts_id.value,
+        hospital_id: hospital_id.value,
+        categories: categories.value,    
         meta: accountUser, 
     };
     if(checkData(personalData) == true)
     {
 
-        await fetch("/api/update_pesonalInfo_patient",
-        {
-            method: 'POST',
-            body: JSON.stringify(personalData),
-            headers:
-            {
-                "Content-Type":"application/json"
-            }
-        }).then(hashFiles => hashFiles.json()).then(data =>
-        {
-            console.log(data);
-        });
+        // await fetch("/api/update_pesonalInfo_patient",
+        // {
+        //     method: 'POST',
+        //     body: JSON.stringify(personalData),
+        //     headers:
+        //     {
+        //         "Content-Type":"application/json"
+        //     }
+        // }).then(hashFiles => hashFiles.json()).then(data =>
+        // {
+        //     console.log(data);
+        // });
     }
 });
 
@@ -856,3 +999,55 @@ document.getElementById("home").addEventListener("click", function()
 {
     window.open("/",'_self');
 });
+
+
+(function() 
+{
+    
+})();
+
+document.getElementById('name_ills').addEventListener('change', function()
+{
+    document.querySelector('#name_ill').value=this.value;
+});
+
+document.getElementById('form_setDiagnosis').addEventListener("submit", async function()
+{
+    const diagnosis = 
+    {
+        name_ill: name_ill.value,
+        treatment: treatment.value,
+        classification: classification.value,
+        data_ill: data_ill.value,
+        data_cured: data_cured.value,
+        meta: meta.value,
+        id_patient: id_patient.value,
+        id_ill: id_ill.value,
+        status: statusIll.value
+    };
+    
+
+    console.log(diagnosis);
+    if(document.querySelectorAll(`#form_setDiagnosis #id_ill`)[0].value===undefined || document.querySelectorAll(`#form_setDiagnosis #id_ill`)[0].value === '')
+    {
+        setDiagnosis(diagnosis);//set_diagnosis
+    }else
+    {
+        //TODO if status==Cured check data_cured
+        updateDB(diagnosis);
+    }
+    // await fetch("/api/update_pesonalInfo_patient",
+    // {
+    //     method: 'POST',
+    //     body: JSON.stringify(personalData),
+    //     headers:
+    //     {
+    //         "Content-Type":"application/json"
+    //     }
+    // }).then(hashFiles => hashFiles.json()).then(data =>
+    // {
+    //     console.log(data);
+    // });
+    
+});
+

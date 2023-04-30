@@ -19,7 +19,11 @@ const get_list_doctors_haveAccess = require('./queryDB/POST/get_list_doctors_hav
 const update_list_doctors = require('./queryDB/POST/update_list_doctors');
 const getCity = require('./queryDB/POST/getCity');
 const get_all_personalInfo_patient = require('./queryDB/POST/get_all_personalInfo_patient')
+const get_all_personalInfo_doctor = require('./queryDB/POST/get_all_personalInfo_doctor');
 const update_pesonalInfo_patient = require('./queryDB/POST/updatePersonalInfoPatient');
+const get_all_classificationIlls = require('./queryDB/GET/get_all_classificationIlls');
+const get_all_name_ills = require('./queryDB/GET/get_all_name_ills');
+const set_diagnosis = require('./queryDB/POST/set_diagnosis');
 /*-----------------------------------*/
 
 router.post("/register",[
@@ -39,7 +43,9 @@ router.post('/get_list_doctors_haveAccess',get_list_doctors_haveAccess);
 router.post('/update_list_doctors',update_list_doctors);
 router.post('/getCity',getCity);
 router.post('/get_all_personalInfo_patient',get_all_personalInfo_patient);
+router.post('/get_all_personalInfo_doctor',get_all_personalInfo_doctor);
 router.post('/update_pesonalInfo_patient',update_pesonalInfo_patient);
+router.post('/set_diagnosis',set_diagnosis);
 /*----------------GET------------------------*/
 
 //-------DB
@@ -50,5 +56,7 @@ router.get("/get_contacts_doctors",get_contacts_doctors);
 router.get("/get_hospitals",get_hospitals);
 router.get("/get_all_profession_doctors",get_all_profession_doctors);
 router.get("/get_all_categories_doctors",get_all_categories_doctors);
+router.get("/get_all_classificationIlls",get_all_classificationIlls);
+router.get("/get_all_name_ills",get_all_name_ills);
 //router.post("/profile",profile);
 module.exports = router;

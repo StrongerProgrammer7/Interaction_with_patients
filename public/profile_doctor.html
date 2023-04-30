@@ -35,7 +35,7 @@
     <input type="checkbox" id="navigationPanel-header__inputCheck">
     <div class="navigationPanel-header__text">
       <div class="navigationPanel-header__title">
-        Пациент: Имя
+        Доктор: Имя
       </div>
     </div>
     <div class="navigationPanel-header__button">
@@ -62,27 +62,11 @@
   </header>
   <!-- right table | left table -->
       <main class="main">
-        <section id="options_data" class="options_data">
-          <table class="table display responsive wrap" style="width:100%" id="table_actual_ills" >
-            <thead>
-              <tr>
-                
-              </tr>
-              <tr class="">
-                <th scope="col">#</th>
-                <th scope="col">Болезнь</th>
-                <th scope="col">Лечение</th>
-              </tr>
-            </thead>
-            <tbody id="table_actual_ills_tbody">
-            </tbody>
-          </table>
-        </section>
         <section id="dataset" class="dataset mt-3">
           <div class="accordion" id="accordion_tables">
             <div class="accordion-item">
               <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" id="show_table_doctors">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" id="show_table_patients">
                   Список Пациентов
                 </button>
               </h2>
@@ -90,9 +74,6 @@
                 <div class="accordion-body">
                   <table class="table table-light display responsive nowrap" style="width:100%" id="table_patients" >
                     <thead>
-                      <tr>
-                        
-                      </tr>
                       <tr class="">
                         <th scope="col">#</th>
                         <th scope="col">Initials surname</th>
@@ -122,14 +103,16 @@
                     <thead>
                       <tr class="">
                         <th scope="col">#</th>
+                        <th scope="col">Фамилия</th>
                         <th scope="col">Название</th>
                         <th scope="col">Лечение</th>
                         <th scope="col">Классификация</th>
                         <th scope="col">Дата начала лечения</th>
                         <th scope="col">Дата окончания лечения</th>
                         <th scope="col">Статус</th>
-                        <th scope="col">Больше информации</th>
+                        <th scope="col">Взаимодействие</th>
                         <th scope="col" class="hide_columns" >id</th>
+                        <th scope="col" class="hide_columns" >id_patient</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -176,13 +159,12 @@
           
         </form>
       </div>
-      
     </div>
   </div>
 </div>
 <!--  Modal Change personal data -->
-<div class="modal fade" id="modal_personalData" tabindex="-1" aria-labelledby="modal_personalDataLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<div class="modal fade" id="modal_personalData" tabindex="-1" role="dialog" aria-labelledby="modal_personalDataLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modal_personalDataLabel">Изменить данные</h5>
@@ -202,33 +184,37 @@
             <span class="input-group-text" id="inputGroup-sizing-sm">Отчество</span>
             <input type="text" class="form-control" id="lastnameId">
           </div>
-          <div class="input-group input-group-sm mb-2">
-            <span class="input-group-text" id="inputGroup-sizing-sm">Адрес проживания</span>
-            <select class="form-control" name="cities" id="addressOfResidence">
-              <option value="">--Please choose an option--</option>
-            </select>
-          </div>
-          <div class="input-group input-group-sm mb-2">
-            <span class="input-group-text" id="inputGroup-sizing-sm">Адрес по прописке</span>
-            <select class="form-control" name="cities" id="addressRegistered">
-              <option value="">--Please choose an option--</option>
-            </select>
-          </div>
+            <div class="input-group input-group-sm mb-3">
+              <label class="input-group-text" for="categories" class="form-label">Категория</label>
+              <select class="form-control" name="category" id="categories" required>
+                <option value="">--Please choose an option--</option>
+              </select>
+            </div>
+            <div class="input-group input-group-sm mb-3" >
+              <label class="input-group-text" for="professions" class="form-label">Специальность</label>
+              <select class="form-control" name="profession" id="professions" required>
+                <option value="">--Please choose an option--</option>
+              </select>
+            </div>
           <div class="input-group input-group-sm mb-3">
             <span class="input-group-text" id="inputGroup-sizing-sm">Телефон</span>
-            <input type="phone" class="form-control" id="phonePatient">
+            <input type="phone" class="form-control" id="phoneDoctor">
           </div>
           <div class="input-group input-group-sm mb-3">
             <span class="input-group-text" id="inputGroup-sizing-sm">Почта</span>
-            <input type="email" class="form-control" id="mailPatient">
+            <input type="email" class="form-control" id="mailDoctor">
           </div>
           <div class="input-group input-group-sm mb-3">
-            <span class="input-group-text" id="inputGroup-sizing-sm">Страховой полис</span>
-            <input type="text" class="form-control" id="insurancePolicy">
+            <label class="input-group-text" for="contacts_id" class="form-label">Контакт</label>
+            <select class="form-control" name="contacts_doctors" id="contacts_id" required>
+              <option value="">--Please choose an option--</option>
+            </select>
           </div>
           <div class="input-group input-group-sm mb-3">
-              <span class="input-group-text" id="inputGroup-sizing-sm">Дата рождения</span>
-            <input type="date" class="form-control text-center" id="bdateId">
+            <label class="input-group-text" for="hospital_id" class="form-label">Больница</label>
+            <select class="form-control" name="hospitals" id="hospital_id" required>
+              <option value="">--Please choose an option--</option>
+            </select>
           </div>
           <div class="input-group input-group-sm mb-3">
               <span class="input-group-text" id="inputGroup-sizing-sm">Ваш аккаунт</span>
@@ -246,6 +232,68 @@
     </div>
   </div>
 </div>
-
+<div class="modal fade" id="modal_setDiagnosis" tabindex="-1" role="dialog" aria-labelledby="modal_setDiagnosisLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal_setDiagnosisLabel">Поставить диагноз</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="return false;" id="form_setDiagnosis" class="form"> 
+          <div class="input-group input-group-sm mb-3">
+            <input type="text" placeholder="Filter by name" id="filter_by_name" class="form-control" autocomplete="off"  />
+            <div class="input-group input-group-sm">
+              <label class="input-group-text" for="name_ills" class="form-label">Наименование болезни</label>
+              <select class="form-control" name="name_ills" id="name_ills">
+                <option value="">--Please choose an option--</option>
+              </select>
+            </div>
+              <input type="text" class="form-control" id="name_ill" placeholder="Название болезни" required>
+          </div>
+          <div class="input-group input-group-sm mb-2">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Лечение</span>
+           <input type="textarea" class="form-control" id="treatment" required>
+         </div>
+         <div class="input-group input-group-sm mb-3">
+            <label class="input-group-text" for="classification" class="form-label">Классификация</label>
+            <select class="form-control" name="classification" id="classification" required>
+              <option value="">--Please choose an option--</option>
+            </select>
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Дата начала лечения</span>
+          <input type="date" class="form-control text-center" id="data_ill" required>
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Дата окончания лечения</span>
+          <input type="date" class="form-control text-center" id="data_cured">
+          </div>
+          <div class="input-group input-group-sm mb-3" style="display: none;" id="form-setDiagnosis__status">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Статус</span>
+            <input type="text" class="form-control" id="statusIll">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Ваш аккаунт</span>
+            <input type="text"  autocomplete="username" class="form-control" id="meta" disabled required>
+          </div>
+          <div class="input-group input-group-sm mb-3" style="display: none;">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Id patient</span>
+            <input type="text"  class="form-control" id="id_patient" disabled required>
+          </div>
+          <div class="input-group input-group-sm mb-3" style="display: none;">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Id ill</span>
+            <input type="text"  class="form-control" id="id_ill" disabled>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success btn-sub" id="btn_setDiagnosis">Поставить диагноз</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

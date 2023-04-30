@@ -134,7 +134,7 @@ body
 
 header
 {
-  position: sticky;
+  position: fixed;
   z-index:3;
   top:0;
 }
@@ -410,6 +410,7 @@ header
     flex-wrap: wrap;
     flex-direction:row-reverse;
     margin:15px;
+    margin-top: 80px;
 }
 
 .options_data
@@ -489,6 +490,7 @@ header
   justify-content: space-between!important;
 }
 
+
 #table_doctors #table_patients
 {
   width: 100%!important;
@@ -510,7 +512,7 @@ header
   height: 20px;
 }
 
-#table_doctors_length select, #table_ills_length select, #table_actual_ills_length select
+#table_doctors_length select, #table_ills_length select, #table_actual_ills_length select, #table_patients_length select
 {
   width: 50%!important;
 }
@@ -538,4 +540,9 @@ header
 .red_color_text
 {
   color: red !important;;
+}
+
+#btn_setDiagnosis
+{
+  color: white;
 }

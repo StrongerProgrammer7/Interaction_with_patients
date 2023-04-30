@@ -481,7 +481,7 @@ async function fillTableDoctors()
            
         });
 
-        console.log(table_doctors.data().length);
+       // console.log(table_doctors.data().length);
         // table_doctors.searchPanes.container().prependTo(table_doctors.table().container());
         // table_doctors.searchPanes.resizePanes();
     })
@@ -593,7 +593,7 @@ async function fillTableIlls()
     await fetch("/api/get_all_ill_s_patient",
     {
         method: 'POST',
-        body: JSON.stringify({meta:accountUser}),
+        body: JSON.stringify({meta:accountUser,queryDoctor:false}),
         headers:
         {
             "Content-Type":"application/json"

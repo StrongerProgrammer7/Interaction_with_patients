@@ -22,7 +22,7 @@ const select_all_doctors = async (req,res) =>
                 let doctor_object = {};
                 doctor_object.num = i+1;
                 doctor_object.id = doctors_data[i].id;
-                let lastname = doctors_data[i].lastname!==null?`${doctors_data[i].lastname[0].toUpperCase()}.`: "";
+                let lastname = doctors_data[i].lastname!==null && doctors_data[i].lastname!=='' ?`${doctors_data[i].lastname[0].toUpperCase()}.`: "";
                 doctor_object.initials = `${doctors_data[i].surname} ${doctors_data[i].name[0].toUpperCase()}. ${lastname}`;
                 doctor_object.mail = doctors_data[i].mail !== null? doctors_data[i].mail : "";
                 doctor_object.profession = doctors_data[i].profession.toLowerCase();
