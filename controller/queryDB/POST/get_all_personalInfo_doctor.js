@@ -8,7 +8,7 @@ const select_all_info_aboutDoctor = async (req,res) =>
     {
         meta
     }= req.body;
-    await mysql.promise().query(`SELECT contacts_id,hospital_id,category,profession,surname,name,lastname,phone,mail FROM Doctor
+    await mysql.promise().query(`SELECT id,contacts_id,hospital_id,category,profession,surname,name,lastname,phone,mail FROM Doctor
     WHERE Doctor.account_ethereum = ?`,[meta])
     .then((result,error) =>
     {

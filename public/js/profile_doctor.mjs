@@ -1,7 +1,7 @@
 var accountUser = null;
 var connectedContract = false;
-var list_patients_giveAccess =[];
 
+var id_doctor;
 var table_patients;
 var table_ills;
 
@@ -97,12 +97,13 @@ $('#table_patients tbody').on('click','tr', function (e)
         try 
         {
             let data = table_patients.row( this ).data();
+            if(data===undefined)
+                data = table_patients.row( e.target ).data()
             document.querySelectorAll(`#form_setDiagnosis #form-setDiagnosis__status`)[0].style.display ='none';
-            
-            //isAccess(data.meta);
-            $('#modal_setDiagnosis').modal('show');
-            $('#form_setDiagnosis #id_patient')[0].value = data.id;
-            document.querySelectorAll(`#form_setDiagnosis #btn_setDiagnosis`)[0].textContent = "Поставить диагноз"
+   
+            isAccess(data.meta);
+            //$('#modal_setDiagnosis').modal('show');
+            fillFormForSetDiagnosis(data);
             console.log($('#form_setDiagnosis #id_patient')[0].value)
             
             
@@ -119,7 +120,7 @@ $('#table_patients tbody').on('click','tr', function (e)
     
 
 });
-
+var data_changeDiagnosisPatient;
 $('#table_ills tbody').on('click','tr','ul li', function (e) 
 { 
     if(e.target.id=="btn_changeDiagnosis")
@@ -127,10 +128,12 @@ $('#table_ills tbody').on('click','tr','ul li', function (e)
         try 
         {
             let data = table_ills.row( e.target ).data();
+            data_changeDiagnosisPatient = data;
+           
             console.log(data);
             document.querySelectorAll(`#form_setDiagnosis #form-setDiagnosis__status`)[0].style.display ='flex';
-            //isAccess(data.meta);
-            $('#modal_setDiagnosis').modal('show');
+            isAccess(data.meta);
+           
             
             setTimeout(()=>
             {
@@ -161,7 +164,7 @@ $('#table_ills tbody').on('click','tr','ul li', function (e)
                     input.addEventListener('change', filterOptions);
                     input.addEventListener('keyup', filterOptions);
                 }
-            },400)
+            },200)
         } catch (error) 
         {
             console.log("Problem with setDiagnosis!",error);    
@@ -211,15 +214,20 @@ const connectMetamask = async () =>
                 let btn = document.getElementById("switch__buttonThree");
                 btn.checked = true;
                 btn.disabled = true;
-
+             
                 
                 if(connectedContract==false)
                     connectContract();                           
 
-                fillTablePatients();
-                fillTableIlls();
-                fillFormPersonalData();
-                fillFormSetDiagnosis();
+                await fillFormPersonalData()
+                .then(()=>
+                {
+                    fillTablePatients();
+                    fillTableIlls();
+                    
+                    fillFormSetDiagnosis();
+                });
+               
 
             }else
             {
@@ -345,7 +353,7 @@ function addActionForListDoctors(data)
         if(data[i].list_doc_have_access_to_patient!==null)
         {
             
-            if(data[i].list_doc_have_access_to_patient.indexOf(`61`) > -1)
+            if(data[i].list_doc_have_access_to_patient.indexOf(id_doctor) > -1)
             {
                 data[i].action += `<button class='btn btn-success btn-sm' id='btn_action_setDiagnosis'>Назначить диагноз</button>`
             }
@@ -506,7 +514,7 @@ async function fillTablePatients()
 
 async function isAccess(meta_patient)
 {
-    console.log(meta_patient);
+    //console.log(meta_patient);
     if(meta_patient !== null && meta_patient !== undefined && meta_patient != "")
     {
         await window.contract.methods.checkAccess(meta_patient)
@@ -528,53 +536,22 @@ async function isAccess(meta_patient)
             {                               
                 fromBlock: 'latest',     
                 toBlock: 'latest'     
-            }).then((events) => console.log(events[0].returnValues))
+            }).then((events) => console.log(events))
             .catch((err) =>console.error(err));
         })
         .catch((error)=>
         {
-            console.log("error",error);
+            console.error(error);
+            //console.error(error.message);
+            let start = error.message.indexOf("message");
+            console.log( error.message.slice(start-1,  error.message.indexOf("\",",start)) );
+
         });
         
     }       
     
 }
 
-
-async function updateDB(list_doctors,button)
-{
-    await fetch("/api/update_list_doctors",
-            {
-                method: 'POST',
-                body: JSON.stringify({meta:accountUser,list_doctors_have_access:list_doctors}),
-                headers:
-                {
-                    "Content-Type":"application/json"
-                }
-            }).then(hashFiles => hashFiles.json()).then(data =>
-            {
-                console.log(data);
-                if(button.id === "btn_action_giveAccess")
-                {
-                    button.classList.remove('btn-info');
-                    button.classList.add('btn-danger');
-                    button.id= 'btn_action_revokeAccess';
-                    button.textContent = "Забрать доступ";
-                    addActionForListDoctors(table_patients.data());
-                    table_patients.draw();
-   
-                }else
-                {
-                    button.classList.add('btn-info');
-                    button.classList.remove('btn-danger');
-                    button.id= 'btn_action_giveAccess';
-                    button.textContent = "Дать доступ";
-                    addActionForListDoctors(table_patients.data());
-                    table_patients.draw();
-                }
-            })
-            .catch(error=>console.log("Error with DB",error));
-}
 
 
 async function fillTableIlls()
@@ -593,41 +570,39 @@ async function fillTableIlls()
     {
         //console.log(result);
         let data= result.data;
-        let options_dd_mm_yyyy = {
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric'
-            //timezone: 'UTC',
-        };
+ 
 
         for(let i =0;i<data.length;i++)
         {
             data[i].num = i+1;
             data[i].action = `<div class='btn-group'>`
             
-            if(data[i].status.includes('ill')===true)
-                data[i].action += `<button class='btn btn-primary btn-sm' id='btn_changeDiagnosis'>Изменить диагноз</button>`
-            if(data[i].date_cured!== "" && data[i].date_cured!== undefined && data[i].date_cured!==null)
-                data[i].date_cured = `${ (new Date(data[i].date_cured)).toISOString().slice(0,10)}`
-            if(data[i].date_ill!== "" && data[i].date_ill!==undefined && data[i].date_ill!==null)
-                data[i].date_ill = `${ (new Date(data[i].date_ill)).toISOString().slice(0,10)}`
-
+            if(data[i].status.includes('ill')===true && data[i].list_doc.includes(id_doctor)===true && data[i].id_doctor === id_doctor)
+            {
+                data[i].action += `<button class='btn btn-primary btn-sm' id='btn_changeDiagnosis'>Изменить диагноз</button>`;    
+            }else
+            {
+                if(data[i].status.includes('ill')===true && data[i].list_doc.includes(id_doctor)===true && data[i].list_doc.includes(data[i].id_doctor)===false)
+                    data[i].action += `<button class='btn btn-primary btn-sm' id='btn_changeDiagnosis'>Изменить диагноз</button>`;
+            }
+            
             data[i].action += `<button class='btn btn-info btn-sm' id='btn_moreInfo_ill'>Больше информации</button>`
-            data[i].action += `</div>`
+            data[i].action += `</div>`;
+            if(data[i].date_cured!== "" && data[i].date_cured!== undefined && data[i].date_cured!==null)
+                data[i].date_cured = `${ new Date(data[i].date_cured).toISOString().slice(0,10) + ' ' + new Date(data[i].date_cured).toISOString().slice(11,19)}`
+            
+            if(data[i].date_ill!== "" && data[i].date_ill!==undefined && data[i].date_ill!==null)
+                data[i].date_ill = `${  new Date(data[i].date_ill).toISOString().slice(0,10) + ' ' + new Date(data[i].date_ill).toISOString().slice(11,19)}`
+
+           
         }
         return data;
     })
     .then(list_ills =>
     {
-        table_ills = new DataTable('#table_ills',
+        if(list_ills!==undefined || list_ills !== null || list_ills.length !==0)
         {
-            responsive: true,
-            initComplete: function() {
-                //Show datatable when load complete
-                $('#table_ills').show();
-            },
-            data: list_ills,
-            columns: [
+            createTableIlss(list_ills,[
                 { data: "num"},
                 { data: "surname"},
                 { data: 'name_ill' },
@@ -638,8 +613,45 @@ async function fillTableIlls()
                 { data: 'status'},
                 { data: 'action'},
                 { data: 'id'},
-                { data: 'id_patient'}
-            ],
+                { data: 'id_patient'},
+                { data: 'meta'}
+            ]);
+        }else
+        {
+            createTableIlss([],[
+                { data: "num"},
+                { data: "surname"},
+                { data: 'name_ill' },
+                { data: 'treatment'},
+                { data: 'classification' },
+                { data: 'date_ill' },
+                { data: 'date_cured'},
+                { data: 'status'},
+                { data: 'action'},
+                { data: 'id'},
+                { data: 'id_patient'},
+                { data: 'meta'}
+            ]);
+        }
+
+
+        // table_ills.searchPanes.container().prependTo(table_ills.table().container());
+        // table_ills.searchPanes.resizePanes();
+    })
+    .catch(error=>console.log);
+}
+
+function createTableIlss(list_ills,name_column)
+{
+    table_ills = new DataTable('#table_ills',
+        {
+            responsive: true,
+            initComplete: function() {
+                //Show datatable when load complete
+                $('#table_ills').show();
+            },
+            data: list_ills,
+            columns: name_column,
         
             searchPanes: 
             {
@@ -657,21 +669,21 @@ async function fillTableIlls()
             columnDefs:[
                 {
                     sClass: "hide_columns",
-                    aTargets: [9,10]
+                    aTargets: [9,10,11]
                 },
                 {
                     searchPanes:
                     {
                         show:true
                     },
-                    targets:[4,7]
+                    targets:[4,5,7]
                 },
                 {
                     searchPanes:
                     {
                         show:false
                     },
-                    targets:[0,1,2,3,5,6,8]
+                    targets:[0,1,2,3,5,6,8,9,10,11]
                 }
                 
             ],
@@ -681,54 +693,6 @@ async function fillTableIlls()
             scroller: true
            
         });
-
-
-        // table_actual_ills = new DataTable('#table_actual_ills',
-        // {
-        //     responsive: true,
-        //     initComplete: function() {
-        //         //Show datatable when load complete
-        //         $('#table_actual_ills').show();
-        //     },
-        //     data: list_ills,
-        //     columns: [
-        //         { data: "num"},
-        //         { data: 'name_ill' },
-        //         { data: 'treatment'}
-        //     ],
-        //     columnDefs:
-        //     [
-        //         {
-        //             className: 'red_color_text',
-        //             target: 0
-        //         }
-                
-        //     ],
-        //     // rowCallback: function(row,data,index)
-        //     // {
-        //     //     if(data.status.includes('ill') !== true && data.status.includes('Болен') !== true)
-        //     //         jQuery(row).remove();
-        //     // },
-        //     scrollY: 300,
-        //     scrollX: 100,
-        //     deferRender: true,
-        //     scroller: true
-           
-        // });
-        // table_actual_ills
-        // .rows( function ( idx, data, node ) 
-        // {
-        //     return (data.status.includes('ill') !== true && data.status.includes('Болен') !== true);
-        // }).remove().draw();
-        // table_actual_ills.responsive.recalc();
-        // table_actual_ills.columns.adjust().responsive.recalc();
-
-        // table_ills.searchPanes.container().prependTo(table_ills.table().container());
-        // table_ills.searchPanes.resizePanes();
-    })
-    .catch(error=>console.log);
-
-
 }
 
 async function fillFormPersonalData()
@@ -796,9 +760,11 @@ async function fillFormPersonalData()
             
  
             //console.log(data);
+            id_doctor = doctor.id;
             nameId.value = doctor.name;
             surnameId.value = doctor.surname;
             lastnameId.value = doctor.lastname;
+            document.getElementById('title_profile').innerHTML = 'Доктор ' + doctor.name + ' <span style="font-size:16px">(#' + id_doctor +')</span>';
 
             phoneDoctor.value = doctor.phone;
             mailDoctor.value = doctor.mail;
@@ -806,7 +772,7 @@ async function fillFormPersonalData()
             selectedOption('#contacts_id',doctor.contacts_id);
             selectedOption('#hospital_id',doctor.hospital_id);
             selectedOption('#categories',doctor.category);
-            meta.value = accountUser; 
+            document.querySelector('#form_change_personalData #meta').value = accountUser; 
             
         })
         .catch(error=>console.log(error))
@@ -844,14 +810,25 @@ async function fillFormSetDiagnosis()
             fillSelectOptions('name_ills',name_ill,optionNameIll);
             fillSelectOptions('classification',classification,optionClassification);
             
-            $('#form_setDiagnosis #meta').value = accountUser; 
-            
+            //$('#form_setDiagnosis #meta').value = accountUser; 
+            document.querySelectorAll(`#form_setDiagnosis #meta`)[0].value = accountUser;
         })
         .catch(error=>console.log(error))
 
     
 }
 
+function fillFormForSetDiagnosis(data_patient)
+{
+    $('#form_setDiagnosis #name_ill')[0].value = "";
+    $('#form_setDiagnosis #treatment')[0].value = "";
+    $('#form_setDiagnosis #data_ill')[0].value = "";
+    $('#form_setDiagnosis #data_cured')[0].value = "";
+    $('#form_setDiagnosis #id_ill')[0].value = "";
+    $('#form_setDiagnosis #statusIll')[0].value = "";
+    $('#form_setDiagnosis #id_patient')[0].value = data_patient.id;
+    document.querySelectorAll(`#form_setDiagnosis #btn_setDiagnosis`)[0].textContent = "Поставить диагноз"
+}
 function fillFormChangeDiagnosisPatient(data_illPatient)
 {
     $('#form_setDiagnosis #id_patient')[0].value = data_illPatient.id;
@@ -1001,10 +978,6 @@ document.getElementById("home").addEventListener("click", function()
 });
 
 
-(function() 
-{
-    
-})();
 
 document.getElementById('name_ills').addEventListener('change', function()
 {
@@ -1013,41 +986,123 @@ document.getElementById('name_ills').addEventListener('change', function()
 
 document.getElementById('form_setDiagnosis').addEventListener("submit", async function()
 {
+    console.log(meta);
     const diagnosis = 
     {
         name_ill: name_ill.value,
         treatment: treatment.value,
         classification: classification.value,
-        data_ill: data_ill.value,
-        data_cured: data_cured.value,
-        meta: meta.value,
+        date_ill: data_ill.value,
+        date_cured: data_cured.value,
+        meta: accountUser,
         id_patient: id_patient.value,
         id_ill: id_ill.value,
         status: statusIll.value
     };
-    
 
     console.log(diagnosis);
     if(document.querySelectorAll(`#form_setDiagnosis #id_ill`)[0].value===undefined || document.querySelectorAll(`#form_setDiagnosis #id_ill`)[0].value === '')
     {
-        setDiagnosis(diagnosis);//set_diagnosis
+       await setDiagnosis(diagnosis);//set_diagnosis
     }else
     {
-        //TODO if status==Cured check data_cured
-        updateDB(diagnosis);
+
+       await updateDB(diagnosis);
     }
-    // await fetch("/api/update_pesonalInfo_patient",
-    // {
-    //     method: 'POST',
-    //     body: JSON.stringify(personalData),
-    //     headers:
-    //     {
-    //         "Content-Type":"application/json"
-    //     }
-    // }).then(hashFiles => hashFiles.json()).then(data =>
-    // {
-    //     console.log(data);
-    // });
+   
     
 });
 
+async function setDiagnosis(diagnosis)
+{
+        await fetch("/api/set_diagnosis",
+        {
+            method: 'POST',
+            body: JSON.stringify(diagnosis),
+            headers:
+            {
+                "Content-Type":"application/json"
+            }
+        }).then(hashFiles => hashFiles.json())
+        .then(result =>
+        {
+            console.log(result)
+            let data = result.data[0];
+            //console.log(data)
+            data.action = `<div class='btn-group'>`
+            
+            if(data.status.includes('ill')===true && data.list_doc.includes(id_doctor)===true)
+                data.action += `<button class='btn btn-primary btn-sm' id='btn_changeDiagnosis'>Изменить диагноз</button>`; 
+            if(data.date_cured!== "" && data.date_cured!== undefined && data.date_cured!==null)
+                data.date_cured = `${ new Date(data.date_cured).toISOString().slice(0,10) + ' ' + new Date(data.date_cured).toISOString().slice(11,19)}`
+              
+            if(data.date_ill!== "" && data.date_ill!==undefined && data.date_ill!==null)
+                data.date_ill = `${  new Date(data.date_ill).toISOString().slice(0,10) + ' ' + new Date(data.date_ill).toISOString().slice(11,19)}`
+
+            data.action += `<button class='btn btn-info btn-sm' id='btn_moreInfo_ill'>Больше информации</button>`
+            data.action += `</div>`;
+            console.log(table_ills.data().length+1);
+            
+            table_ills.row.add(
+                {
+                    "num": table_ills.data().length+1,
+                    "surname": data.surname,
+                    'name_ill' : data.name_ill,
+                    'treatment': data.treatment,
+                    'classification': data.classification,
+                    'date_ill' : data.date_ill,
+                    'date_cured': data.date_cured,
+                    'status': data.status,
+                    'action': data.action,
+                    'id': data.id,
+                    'id_patient': data.id_patient,
+                    'meta': data.meta
+                }
+            ).draw();
+           // console.log(table_ills.data());
+        })
+        .catch(error=>console.log(error))
+
+}
+
+async function updateDB(diagnosis)
+{
+    await fetch("/api/update_diagnosis",
+    {
+        method: 'POST',
+        body: JSON.stringify(diagnosis),
+        headers:
+        {
+            "Content-Type":"application/json"
+        }
+    }).then(hashFiles => hashFiles.json())
+    .then(result =>
+    {
+        console.log(result);
+        console.log(data_changeDiagnosisPatient);
+        data_changeDiagnosisPatient.classification = diagnosis.classification;
+
+        if(diagnosis.date_cured!== "" && diagnosis.date_cured!== undefined && diagnosis.date_cured!==null)
+            data_changeDiagnosisPatient.date_cured = `${ new Date(diagnosis.date_cured).toISOString().slice(0,10) + ' ' + new Date(diagnosis.date_cured).toISOString().slice(11,19)}`
+            
+        if(diagnosis.date_ill!== "" && diagnosis.date_ill!==undefined && diagnosis.date_ill!==null)
+            data_changeDiagnosisPatient.date_ill = `${  new Date(diagnosis.date_ill).toISOString().slice(0,10) + ' ' + new Date(diagnosis.date_ill).toISOString().slice(11,19)}`
+
+        data_changeDiagnosisPatient.treatment = diagnosis.treatment;
+        data_changeDiagnosisPatient.name_ill = diagnosis.name_ill;
+        data_changeDiagnosisPatient.status = diagnosis.status;
+        if(diagnosis.status === "Cured")
+        {
+            data_changeDiagnosisPatient.action = `<div class='btn-group'>`;
+            data_changeDiagnosisPatient.action += `<button class='btn btn-info btn-sm' id='btn_moreInfo_ill'>Больше информации</button>`;
+            data_changeDiagnosisPatient.action += `</div>`;
+        }
+    
+
+        table_ills.row(data_changeDiagnosisPatient.num-1).data(data_changeDiagnosisPatient).draw();
+       // table_ills.draw();
+       // console.log(table_ills.data());
+    })
+    .catch(error=>console.log(error))
+
+}

@@ -607,7 +607,12 @@ async function fillTableIlls()
         for(let i =0;i<data.length;i++)
         {
             data[i].num = i+1;
-            data[i].action = `<button class='btn btn-info btn-sm' id='btn_moreInfo_ill'>Больше информации</button>`
+            data[i].action = `<button class='btn btn-info btn-sm' id='btn_moreInfo_ill'>Больше информации</button>`;
+            if(data[i].date_cured!== "" && data[i].date_cured!== undefined && data[i].date_cured!==null)
+                data[i].date_cured = `${ new Date(data[i].date_cured).toISOString().slice(0,10) + ' ' + new Date(data[i].date_cured).toISOString().slice(11,19)}`
+        
+            if(data[i].date_ill!== "" && data[i].date_ill!==undefined && data[i].date_ill!==null)
+                data[i].date_ill = `${  new Date(data[i].date_ill).toISOString().slice(0,10) + ' ' + new Date(data[i].date_ill).toISOString().slice(11,19)}`
         }
         return data;
     })
@@ -756,12 +761,7 @@ async function fillFormPersonalData()
             nameId.value = data.name;
             surnameId.value = data.surname;
             lastnameId.value = data.lastname;
-            var options_dd_mm_yyyy = {
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric'
-                //timezone: 'UTC',
-            };
+            document.getElementById('title_profile').textContent = 'Пациент ' + data.name;
 
             let birthday = `${ (new Date(data.datebirthd)).toISOString().slice(0,10)}`
             bdateId.value = birthday;

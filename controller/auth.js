@@ -24,6 +24,7 @@ const update_pesonalInfo_patient = require('./queryDB/POST/updatePersonalInfoPat
 const get_all_classificationIlls = require('./queryDB/GET/get_all_classificationIlls');
 const get_all_name_ills = require('./queryDB/GET/get_all_name_ills');
 const set_diagnosis = require('./queryDB/POST/set_diagnosis');
+const update_diagnosis = require('./queryDB/POST/update_diagnosis');
 /*-----------------------------------*/
 
 router.post("/register",[
@@ -46,6 +47,7 @@ router.post('/get_all_personalInfo_patient',get_all_personalInfo_patient);
 router.post('/get_all_personalInfo_doctor',get_all_personalInfo_doctor);
 router.post('/update_pesonalInfo_patient',update_pesonalInfo_patient);
 router.post('/set_diagnosis',set_diagnosis);
+router.post('/update_diagnosis',update_diagnosis);
 /*----------------GET------------------------*/
 
 //-------DB

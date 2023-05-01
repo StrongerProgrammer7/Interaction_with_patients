@@ -34,7 +34,7 @@
   <header class="navigationPanel-header">
     <input type="checkbox" id="navigationPanel-header__inputCheck">
     <div class="navigationPanel-header__text">
-      <div class="navigationPanel-header__title">
+      <div class="navigationPanel-header__title" id="title_profile">
         Доктор: Имя
       </div>
     </div>
@@ -113,6 +113,7 @@
                         <th scope="col">Взаимодействие</th>
                         <th scope="col" class="hide_columns" >id</th>
                         <th scope="col" class="hide_columns" >id_patient</th>
+                        <th scope="col" class="hide_columns" >meta</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -263,11 +264,11 @@
           </div>
           <div class="input-group input-group-sm mb-3">
             <span class="input-group-text" id="inputGroup-sizing-sm">Дата начала лечения</span>
-          <input type="date" class="form-control text-center" id="data_ill" required>
+          <input type="datetime-local" class="form-control text-center" id="data_ill" required>
           </div>
           <div class="input-group input-group-sm mb-3">
             <span class="input-group-text" id="inputGroup-sizing-sm">Дата окончания лечения</span>
-          <input type="date" class="form-control text-center" id="data_cured">
+          <input type="datetime-local" class="form-control text-center" id="data_cured">
           </div>
           <div class="input-group input-group-sm mb-3" style="display: none;" id="form-setDiagnosis__status">
             <span class="input-group-text" id="inputGroup-sizing-sm">Статус</span>
@@ -284,6 +285,10 @@
           <div class="input-group input-group-sm mb-3" style="display: none;">
             <span class="input-group-text" id="inputGroup-sizing-sm">Id ill</span>
             <input type="text"  class="form-control" id="id_ill" disabled>
+          </div>
+          <div class="input-group input-group-sm mb-3" style="display: none;">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Id ill</span>
+            <input type="text"  class="form-control" id="meta_patient" disabled>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-success btn-sub" id="btn_setDiagnosis">Поставить диагноз</button>

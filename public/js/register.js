@@ -10,17 +10,20 @@ window.addEventListener("DOMContentLoaded",async() =>
     
     if(typeof window.ethereum !== 'undefined')
     {
+
         if(window.ethereum.isMetaMask)
             console.log("Using Metamask's web3 provider");
         window.web3 = await new Web3(window.ethereum);
-
+       
         const accounts = await ethereum.request({method: "eth_requestAccounts"});
         accountUser = accounts[0];
         document.getElementById("meta").value = accountUser; 
         try 
         {
-            error.style.display = "none";       
+            error.style.display = "none";    
+           
             window.contract = await new window.web3.eth.Contract(ABI,addressContract);
+          
             //console.log(window.contract._address);
             
             await fetch("/api/get_cities",
@@ -238,9 +241,15 @@ async function registerPatient()
     if(checkData(registerData) == true)
     {
         //TODO Begin query DB ,check repeat 
-        await window.contract.methods.createPatient().send({from :accountUser}).then((res) =>
+        await window.contract.methods.createPatient().send({from :accountUser}, (error,result) =>
         {
-           // console.log(res);
+            if(error)
+                return console.error(error);
+            console.log('txHash:',result);
+        })
+        .then((receipt) =>
+        {
+            console.log(receipt);
             window.contract.getPastEvents("allEvents",
             {                               
                 fromBlock: 'latest',     
@@ -274,6 +283,7 @@ async function registerPatient()
         {
             console.log(err);
             messageError('Error with contract, check console');
+
         });
        
 
