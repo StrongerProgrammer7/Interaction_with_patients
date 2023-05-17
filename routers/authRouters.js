@@ -30,10 +30,6 @@ router.get('/profile',(req,res) =>
 {
     res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
     let profileHTML = fs.createReadStream('./public/profile.html','utf8');
-    /*res.sendFile("registerPatient.html",
-        {
-            root:"./public"
-        });*/
     profileHTML.pipe(res);
  
 });
@@ -42,10 +38,6 @@ router.get('/profile_doctor',(req,res) =>
 {
     res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
     let profile_doctorHTML = fs.createReadStream('./public/profile_doctor.html','utf8');
-    /*res.sendFile("registerPatient.html",
-        {
-            root:"./public"
-        });*/
     profile_doctorHTML.pipe(res);
  
 });

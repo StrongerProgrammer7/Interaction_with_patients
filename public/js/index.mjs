@@ -294,76 +294,10 @@ const connectMetamask = async () =>
                 btn.disabled = true;
                 showMain();
 
-                if(document.getElementById("account")===null)
-                {
-                    const data = document.getElementById("information").appendChild(document.createElement('span'));
-                    /*data.style.color = "green";*/
-                    data.className = "accountUsers";
-                    data.id = "account";
-                    data.textContent = accountUser;
-                    
-                    helper.createBtn("information","block","btnSwitch","Изменить аккаунт");
-    
-                    /*if(document.getElementById("btnSwitch") !==null)
-                        document.getElementById("btnSwitch").hidden = false;*/
-                }else
-                {
-                    document.getElementById("account").textContent = accountUser;
-                    document.getElementById("account").style.color = "#0084ff";
-                    if(document.getElementById("btnSwitch") ===null || document.getElementById("btnSwitch") === undefined)
-                        helper.createBtn("information","block","btnSwitch","Изменить аккаунт");
-                  /*if(document.getElementById("btnSwitch") !=null)
-                        document.getElementById("btnSwitch").hidden =false;*/
-                }
-
                 if(connectedContract==false)
                     connectContract();
 
-                if(document.getElementById("interactionWithAccounts").style.display == "none")
-                {
-                    helper.createBtn("interactionWithAccounts","block","btnRole","Дать доступ");
-                    helper.createBtn("interactionWithAccounts","block","btnRole","Забрать доступ");
-                }
-                             
-                if(document.getElementById("infoAboutPatient").style.display == "none")
-                {
-                    document.getElementById("infoAboutPatient").style.display = "block"
-                    helper.createBtn("interactionWithPatient","grid","btnGetBaseInfoPatient","Посмотреть основную информацию о пациенте");
-                    helper.createBtn("interactionWithPatient","grid","btnSetBaseInfoPatient","Обновить основную информацю");
-                    helper.createBtn("interactionWithPatient","block","btnGetnInfoDiagnos","Посмотреть все назначенные диагнозы");
-                    helper.createBtn("interactionWithPatient","block","btnGetHistoryPatient","Посмотреть историю болезни");
-                }
 
-                if(document.getElementById("DoctorInteractionWithPatients").style.display == "none")
-                {
-                    helper.createBtn("DoctorInteractionWithPatients","block","btnSetDiagnosis","Поставить диагноз для пациента");
-                    helper.createBtn("DoctorInteractionWithPatients","block","btnChangeDiagnosis","Изменить диагноз для пациента");
-                    helper.createBtn("DoctorInteractionWithPatients","block","btnGetInfoDiagnosCurDoc","Посмотреть диагнозы назначенные пациенту вами");
-      
-                    const form = document.getElementById("DoctorInteractionWithPatients").appendChild(document.createElement('form'));
-                    form.id = "formElem";
-                    const inputFiles = document.getElementById("formElem").appendChild(document.createElement('input'));
-
-                    inputFiles.id = 'files';
-                    inputFiles.type = 'file';
-                    inputFiles.classList.add("form-control", "mt-3","mb-2");
-                    inputFiles.name ='file';
-                    inputFiles.multiple = true;
-
-                    helper.createBtn("formElem","block","btnDownloadLinks","Загрузить файлы ");
-                }
-
-                /*if(document.getElementById("historyPatient").style.display == "none")
-                {
-                    let btn = helper.createBtn("historyPatient","block","btnGetHistoryPatient","Get patient's history");
-                    btn.style.width="240px";
-                }*/
-
-                /*if(document.getElementById("downloadFiles").style.display == "none")
-                {
-                    let btn  = helper.createBtn("downloadFiles","block","btnDownloadLinks","Download links ipfs!");
-                    btn.style.width="240px";
-                }*/
             await fetch("/api/isExistsPatient_Doctor",
             {
                 method: 'POST',
@@ -407,8 +341,6 @@ const connectMetamask = async () =>
                     document.getElementById("btn_open_model_pass").style.display = "none";
                 });
                
-                //document.getElementById("links_setDiagnosId").style.visibility = "visible";
-                //document.getElementById("links_changeDiagnosId").style.visibility = "visible";
 
             }else
             {
@@ -483,209 +415,6 @@ const connectContract = async () =>
     
 }
 
-const giveRoleDoctor = async () =>
-{
-    let accountDoctor = document.getElementById("accounts_doctor_patient").value;
-    document.getElementById("accounts_doctor_patient").style = "border: none;";
-    if(accountDoctor !== null && accountDoctor !== undefined && accountDoctor != "")
-    {
-        try 
-        {
-            await window.contract.methods.giveRole(accountDoctor).send({from :accountUser});   
-            document.getElementById("accounts_doctor_patient").style = "border: thick double green;";
-            window.contract.getPastEvents("allEvents",
-            {                               
-                fromBlock: 'latest',     
-                toBlock: 'latest'     
-            }).then((events) => console.log(events))
-            .catch((err) => console.error(err));
-        } catch (error) 
-        {
-            console.log(error);
-        }
-    }else
-    {
-        document.getElementById("accounts_doctor_patient").style = "border: thick double red;";
-    }
-    
-    
-       
-}
-const revokeRoleDoctor = async () =>
-{
-    document.getElementById("accounts_doctor_patient").style = "border: none;";
-    let accountDoctor = document.getElementById("accounts_doctor_patient").value;
-    if(accountDoctor !== null && accountDoctor !== undefined && accountDoctor != "")
-    {
-        try 
-        {
-            await window.contract.methods.anualRole(accountDoctor).send({from :accountUser});
-            document.getElementById("accounts_doctor_patient").style = "border: thick double green;";
-            
-        } catch (error) 
-        {
-            console.log(error);
-        }
-    }else
-    {
-        document.getElementById("accounts_doctor_patient").style = "border: thick double red;";
-    }
-    
-    
-    
-}
-
-const getBaseInfoPatient = async() =>
-{  
-    if(accountUser !== null && accountUser !== undefined && accountUser != "")
-    {
-        if(document.getElementById("aboutPatient") === null || document.getElementById("aboutPatient") === undefined)
-        {
-            try 
-            {
-                let baseDataAboutPatient;
-
-                if(document.getElementById("accounts_doctor_patient").value === null || document.getElementById("accounts_doctor_patient").value === undefined || document.getElementById("accounts_doctor_patient").value == "")
-                    baseDataAboutPatient= await window.contract.methods.getInformationPatient(accountUser).call({from :accountUser});
-                else
-                {
-                    let account_patient = document.getElementById("accounts_doctor_patient").value;
-                    console.log(account_patient);
-                    baseDataAboutPatient= await window.contract.methods.getInformationPatient(account_patient).call({from :accountUser});
-                }
-
-                if(document.getElementById("errorAccountBaseDate") !== null && document.getElementById("errorAccountBaseDate") !== undefined)
-                    document.getElementById("btnGetBaseInfoPatient").removeChild(document.getElementById("errorAccountBaseDate"));
-                if(document.getElementById("errorBaseData") !== null && document.getElementById("errorBaseData") !== undefined)
-                    document.getElementById("btnGetBaseInfoPatient").removeChild(document.getElementById("errorBaseData"));
-
-                if(baseDataAboutPatient!==null && baseDataAboutPatient.length !=0)
-                {
-            
-                        let aboutPatient = document.getElementById("interactionWithPatient").appendChild(document.createElement('div'));
-                        aboutPatient.classList.add("informationAboutPatient-box","box__b");
-                        aboutPatient.id = "aboutPatient";
-                    
-                        for (let elem = 0; elem < baseDataAboutPatient.length; elem++) 
-                        {
-                            const element = baseDataAboutPatient[elem];
-                            let name = document.getElementById("aboutPatient").appendChild(document.createElement('h6'));
-                            name.style.display = "inline";
-                            name.innerText = element;
-                            aboutPatient.appendChild(document.createElement('br'));
-                        }
-                            
-                        /*let hiddenDiv = document.getElementById("interactionWithPatient").appendChild(document.createElement('div'));
-                        hiddenDiv.classList.add("informationAboutPatient-box","c");   */     
-                }
-            } catch (error) 
-            {
-                console.log(error);
-                if(document.getElementById("errorBaseData") === null || document.getElementById("errorBaseData") === undefined)
-                    helper.displayError_tagP("btnGetBaseInfoPatient","errorBaseData","Есть проблема, если вы врач, проверьте поле ввода, если нет, обратитесь к администратору!","red"); 
-            }          
-            
-        }else
-        {
-           // document.getElementById("interactionWithPatient").removeChild(document.getElementById("interactionWithPatient").children[2]);
-            document.getElementById("interactionWithPatient").removeChild(document.getElementById("interactionWithPatient").lastChild);
-        }
-    }else
-    {
-        if(document.getElementById("errorAccountBaseDate") === null || document.getElementById("errorAccountBaseDate") === undefined)
-            helper.displayError_tagP("btnGetBaseInfoPatient","errorAccountBaseDate","Error! Check your account!","red");
-    }       
-
-}
-
-function btnSetDiagnosis()
-{ 
-    window.open("/setNewDiagnos",'_self');
-}
-
-function btnChangeDiagnosis()
-{ 
-    window.open("/changeDiagnos",'_self');
-}
-
-const btnSetBaseInfoPatient = async() =>
-{
-    if(accountUser !== null && accountUser !== undefined && accountUser !="")
-    {
-        window.location.href = '/register?setNewDataBase=1';
-    }else
-    {
-        if(document.getElementById("errorAccountDiagnosisFull") === null || document.getElementById("errorAccountDiagnosisFull") === undefined)
-            helper.displayError_tagP("btnGetnInfoDiagnos","errorAccountDiagnosisFull","Error! Check your account!","red");
-        
-    }
-    
-    
-}
-
-const btnGetnInfoDiagnos = async() =>
-{
-    if(accountUser !== null && accountUser !== undefined && accountUser !="")
-    {
-        if(document.getElementById("accounts_doctor_patient").value !== null && document.getElementById("accounts_doctor_patient").value !== undefined && document.getElementById("accounts_doctor_patient").value!="")
-        {
-            const acc_patient = document.getElementById("accounts_doctor_patient").value;
-            const accountCurrent = accountUser;
-            window.location.href = '/getDiagnosisPatient?accountPatient='+acc_patient + '&account='+accountCurrent +'&list=full';
-        }else
-        {
-            document.getElementById("accounts_doctor_patient").style = "border: thick double red;";
-        }
-    }else
-    {
-        if(document.getElementById("errorAccountDiagnosisFull") === null || document.getElementById("errorAccountDiagnosisFull") === undefined)
-            helper.displayError_tagP("btnGetnInfoDiagnos","errorAccountDiagnosisFull","Error! Check your account!","red");
-        
-    }
-    
-}
-
-const btnGetInfoDiagnosCurDoc = async() =>
-{
-    if(accountUser !== null && accountUser !== undefined && accountUser !="")
-    {
-        if(document.getElementById("account_patient").value !== null && document.getElementById("account_patient").value !== undefined && document.getElementById("account_patient").value!="")
-        {
-            const acc_patient = document.getElementById("account_patient").value;
-            const accountCurrent = accountUser;
-            window.location.href = '/getDiagnosisForCurDoc?accountPatient=' + acc_patient + '&account=' + accountCurrent+'&list=curDoc';
-        }else
-        {
-            document.getElementById("account_patient").style = "border: thick double red;";
-        }
-    }else
-    {
-        if(document.getElementById("errorAccountDiagnosisCurrDoc") === null || document.getElementById("errorAccountDiagnosisCurrDoc") === undefined)
-            helper.displayError_tagP("btnGetInfoDiagnosCurDoc","errorAccountDiagnosisCurrDoc","Error! Check your account!","red");
-        
-    }    
-}
-
-const btnGetHistoryPatient = async() =>
-{
-    if(accountUser !== null && accountUser !== undefined && accountUser !="")
-    {
-        if(document.getElementById("accounts_doctor_patient").value !==null && document.getElementById("accounts_doctor_patient").value !==undefined && document.getElementById("accounts_doctor_patient").value!="")
-        {
-            const acc_patient = document.getElementById("accounts_doctor_patient").value;
-            const accountCurrent = accountUser;
-            window.location.href = '/getHistoryPatient?accountPatient='+acc_patient + '&account='+accountCurrent + '&list=history';
-        }else
-        {
-            document.getElementById("accounts_doctor_patient").style = "border: thick double red;";
-        }
-    }else
-    {
-        if(document.getElementById("errorAccountDiagnosisHistory") === null || document.getElementById("errorAccountDiagnosisHistory") === undefined)
-            helper.displayError_tagP("btnGetHistoryPatient","errorAccountDiagnosisHistory","Error! Check your account!","red");
-        
-    } 
-}
 
 const btnDownloadLinks = async() =>
 {
@@ -754,7 +483,6 @@ const btnDownloadLinks = async() =>
 
 function showMain()
 {				
-    document.getElementById('mainContentInteraction').style.display="block";
     // document.getElementById("wr").style.position ="unset";
     document.getElementById("problems").style.paddingBottom = "0";		   
 }
@@ -779,7 +507,6 @@ function showProblem(parentDiv,problem,text,textForButton,idForButton)
 {
 	document.getElementById("problems").style.paddingBottom = "1.4%";
     // document.getElementById("wr").style.position ="fixed";      
-	document.getElementById('mainContentInteraction').style.display="none";
 	helper.off_onLinks("links__registerId","none","default");
     //helper.off_onLinks("links_setDiagnosId","none","default");
     //helper.off_onLinks("links_changeDiagnosId","none","default");

@@ -9,7 +9,6 @@ const fileUpload = require('express-fileupload');
 const dotenv = require('dotenv').config();
 const pages = require('./routers/authRouters');
 const controller = require('./controller/auth');
-
 const PORT = process.env.PORT || 3000;
 
 const app = express();
@@ -51,7 +50,7 @@ const startServer = async function()
         https.createServer(optionHTTPS,app)
         .listen(PORT, () =>
         {
-            console.log(`Server has been started on the port ${PORT} and env=${process.env.NODE_ENV}` )
+            console.log(`Server has been started on the port ${PORT} and HTTPS and env=${process.env.NODE_ENV}` )
         })
         //app.listen(PORT,() => console.log(`Server has been started on the port ${PORT} and env=${process.env.NODE_ENV}` )); 
 
