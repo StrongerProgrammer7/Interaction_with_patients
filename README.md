@@ -1,10 +1,10 @@
 <sub>**This work was done as part of the Course work by Author: Abdyukov Z.M. **</sub> 
 <h3>Content</h3>
 
-[Brief introduction](https://github.com/StrongerProgrammer7/Interaction_with_patients/tree/main#-brief-introduction-)  
-[Development tools](https://github.com/StrongerProgrammer7/Interaction_with_patients/tree/main#development-tools-and-programming-language)
-[Architecture](https://github.com/StrongerProgrammer7/Interaction_with_patients/tree/main#prototype-architecture)
-[What is the change compared to the previous work](https://github.com/StrongerProgrammer7/Interaction_with_patients/tree/main#what-is-the-change-compared-to-the-previous-work)
+[Brief introduction](https://github.com/StrongerProgrammer7/Interaction_with_patients/tree/main#-brief-introduction-)<br>
+[Development tools](https://github.com/StrongerProgrammer7/Interaction_with_patients/tree/main#development-tools-and-programming-language)<br>
+[Architecture](https://github.com/StrongerProgrammer7/Interaction_with_patients/tree/main#prototype-architecture)<br>
+[What is the change compared to the previous work](https://github.com/StrongerProgrammer7/Interaction_with_patients/tree/main#what-is-the-change-compared-to-the-previous-work)<br>
 [View Prototype](https://github.com/StrongerProgrammer7/Interaction_with_patients/tree/main#-view-prototype-)
 
 <div align="center">
