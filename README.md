@@ -79,9 +79,9 @@ The scientific novelty of the work lies in the fact that a new approach to the i
 </div>
 <div>
 <h3 align="center"> View Prototype </h3>
-<p align="left"> MAIN PAGE </p>
-<video src='' width=100px autoplay></video>
- <p align="left"> <strong>Profile Patient</strong> </p>
+<p align="left"> Preview </p>
+<video src='' width=100px autoplay alt='This will be movie></video>
+  <p align="left"> <strong>Profile Patient</strong> </p>
 <p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/8ff4a370-8ff6-4f18-b2b3-7d7886f2d3f8"></p>
  <p align="left"> <strong>Profile Doctor</strong></p>
 <p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/9c1bab92-ec48-49be-8b2c-723ab1500361"></p>
