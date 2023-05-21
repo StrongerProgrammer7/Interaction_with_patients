@@ -39,32 +39,35 @@ The scientific novelty of the work lies in the fact that a new approach to the i
 </div>
 <div>
 <h3 align="center">Prototype architecture</h3>
-<p>Interaction patient with doctor</p>
-<p align="center"><img src=""></p>
-<p>Interaction Doctor with patient's contract</p>
-<p align="center"><img src=""></p>
-<p>Interaction patient with contract</p>
-<p align="center"><img src=""></p>
+<p>Interaction patient with Db/contract</p>
+<p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/33d150e3-4a85-4ca3-b226-bd9ba120883a"></p>
+<p>Interaction Doctor with Db/contract</p>
+<p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/0af80b59-26b4-43f4-b587-f65ef5d656d4"></p>
+<p>Schema database</p>
+<p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/d04f90f2-a59c-4b10-8147-190346a434a0"></p>
 </div>
 <div>
 <h3 align="center">What is the change compared to the previous work</h3>
-<p align="justify"><p>
+ <p><a href="https://github.com/StrongerProgrammer7/SmartContractPatients.git"> More info about last work </a><br>
+  <span>I advise you to watch this, as the current work is related to the last one</span></p>
+<p align="justify">Comparing with the previous course work, this prototype provides more opportunities, namely:
+ <ul>
+  <li>Smart contract operations are much cheaper, since the smart contract acts as a gatekeeper that controls access to data.</li>
+  <li>The database allows you to store large amounts of files and data about patients and doctors without loading the blockchain.</li>
+  <li>Control remains entirely with the patient</li>
+  <li>Operations are completely transparent</li><p>
 </div>
 <div>
-<h3 align="center">Some problem and TODO:</h3>
+<h3 align="center">TODO:</h3>
 <p align="justify">
-      The first problem is <b>the limited size of the contract</b>. The developers of the Ethereum network and smart contracts have limited the size of contracts, which does not allow adding a lot of functionality. <b>The maximum contract size is 24576 bytes</b>, you can also use the built-in optimizer, but they also have a "too deep stack" limit of no more than 16 local variables. This was done in order to prevent DDos attacks. It is also possible to optimize the contract if it is translated into the Assembly (Assembler) language, but the developers strongly do not recommend it, since in this case there is work with memory, as a result of which it can cause problems in the Ethereum network. As a result, a smart contract can only be used with little functionality and a limited number of checks in the contract itself.</p>
-<p align="justify">The second problem is that the contract is <b>too expensive</b>. The write functions are not expensive, but the display functions have nested loops, which greatly increases the price of the contract. <b>So, for example, displaying one diagnosis costs 35,000 gas, if there are already two, then 70,000 gas.</b> But I also note that the Ethereum network switched to “ProofOfStake” in the fall of 2022, perhaps next year the cost of computing will fall, and the contract will become cheaper.</p>
-<p align="justify">The third problem is file storage. About 75 million people use cloud storage. Part of the campaign, another part uses intentionally, and still others only indirectly. The rest may not know about it, because there is simply no need. IPFS, on the other hand, is still a very young technology that requires development, testing and implementation to the masses (for example, a default installation along with the OS).<b> As a result, the use of IPFS as a storage is not very advisable in the near future, since in addition to those mentioned above, there are few users, and, therefore, the data will be loaded for a long time, and the receipt can also be long.</b></p>
-<p align="justify">Also, <b>the developed application is only partially decentralized, as it works on the basis of a central node - a server.</b> For an application to be fully decentralized, the contract must be published to IPFS and the application deployed to a distributed file system. Only in this case, the dependence on the central node will disappear and the application will be truly decentralized.</p>
-<p> Cost(gas): Contract Creation (Patient) - 4764952, (addPatient) - 2224094 ,<br> Register - 362839, <br> Show BaseInfo - 58385, Show all diagnosis - 248218, Show history - 246536</p>
-<h4>TODO: </h4>
+     In the future, it is planned to add the ability to store large files about patients (fluorography, etc.) in the database and also add it to IPFS. Because IPFS data is mutable and secure, any attempt to change data stored in IPFS can only be done by changing the identifier. Therefore, it provides a cryptographic identity to protect data from manipulation. Each data file stored in IPFS contains a cryptographically generated hash value. It has only one meaning and is used to identify data files stored in IPFS. Since IPFS eliminates duplicate files and it is impossible to change them because the files are protected by a cryptographic key</p>
+<p> <strong>Cost(gas/$): Contract Creation (Patient) ~ 1639436/7.57$, (addPatient) ~ 1085549/5.12$ , Register - 216485/2.13$ Give access ~ 128597/1.4$</strong></p>
+ 
++ 1. Add files to database
 
-+ 1. Contract optimization: learn Solc and apply
++ 2. Include IPFS
 
-+ 2. WebSite optimization (the main page slows down)
-
-+ 3. WebSite: remove jQuery (only used for slider), manually create slider
++ 3. Add available work with IPFS for big files
 
 + 4. Test on large volumes of data
 
@@ -75,25 +78,17 @@ The scientific novelty of the work lies in the fact that a new approach to the i
 <h3 align="center"> View Prototype </h3>
 <p align="center"> MAIN PAGE </p>
 <video src='' width=100px autoplay></video>
-<p align="center"> Chapter Patient </p>
-<p align="center"><img src=""></p>
-<p align="center"> Chapter Doctor</p>
-<p align="center"><img src=""></p>
-<p align="center"> Show Base info </p>
-<p align="center"><img src=""></p>
-<p align="center"> Check connect: circle is check connect with wallet, check mark is connect with contract</p>
-<p align="center"><img src=""></p>
+<p align="center"> Profile Patient </p>
+<p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/8ff4a370-8ff6-4f18-b2b3-7d7886f2d3f8"></p>
+<p align="center"> Profile Doctor</p>
+<p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/9c1bab92-ec48-49be-8b2c-723ab1500361"></p>
 <p align="center"> Register Form </p>
+<p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/db3c2fdf-98e2-4d27-89cd-6390d2bf84ad"></p>
+<p align="center"> Register Form for doctor</p>
 <p align="center"><img src=""></p>
-<p align="center"> Success Register </p>
-<p align="center"><img src=""></p>
-<p align="center"> Success access </p>
-<p align="center"><img src=""></p>
-<p align="center"> Set diagnosis Form </p>
-<p align="center"><img src=""></p>
-<p align="center"> Info diagnos </p>
-<p align="center"><img src=""></p>
-<p align="center"> History </p>
-<p align="center"><img src=""></p>
+<p align="center"> Exists access (Patient) </p>
+<p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/a9731d90-d889-4a13-a150-8de00cfabce6"></p>
+<p align="center"> Exists access (Doctor) </p>
+<p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/27290612-23c5-4dc0-a13b-110f11e2fce1"></p>
 </div>
 <h4> Author: Abdyukov Z.M. </h4>
