@@ -75,12 +75,12 @@ The scientific novelty of the work lies in the fact that a new approach to the i
 + 4. Test on large volumes of data
 
 + 5. In case of successful solution of the problems above, create an Android App
-
+ 
 </div>
 <div>
 <h3 align="center"> View Prototype </h3>
 <p align="left"> Preview </p>
-<video src='' width=100px autoplay alt='This will be movie></video>
+<video src='' width=100px autoplay alt='This will be movie'></video>
   <p align="left"> <strong>Profile Patient</strong> </p>
 <p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/8ff4a370-8ff6-4f18-b2b3-7d7886f2d3f8"></p>
  <p align="left"> <strong>Profile Doctor</strong></p>
