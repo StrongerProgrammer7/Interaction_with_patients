@@ -9,9 +9,12 @@ const fileUpload = require('express-fileupload');
 const dotenv = require('dotenv').config();
 const pages = require('./routers/authRouters');
 const controller = require('./controller/auth');
-const PORT = process.env.PORT || 3000;
 
+
+const PORT = process.env.PORT || 3000;
+const urlencodedParser = express.urlencoded({extended: true});//для сессии
 const app = express();
+
 app.use(express.json());
 app.use("/css",express.static(__dirname + "/public/css"));
 app.use("/js",express.static(__dirname + "/public/js"));
@@ -19,6 +22,7 @@ app.use("/utils", express.static(__dirname + "/public/utils"));
 app.use("/image",express.static(__dirname + "/public/image"));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(fileUpload());
+
 app.engine('ejs',require('ejs-mate'));
 app.set("view engine",'ejs');
 app.set("views","./views");
@@ -31,6 +35,8 @@ const optionHTTPS =
     key: fs.readFileSync('certificates/key.pem'),
     cert: fs.readFileSync('certificates/cert.pem')
 }
+
+
 
 const startServer = async function()
  {

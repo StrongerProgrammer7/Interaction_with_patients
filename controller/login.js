@@ -43,16 +43,17 @@ async function signUp(query_check,res,meta,pass)
             return res.status(401).json({status:"error", error:"login or pass incorrect"})
         }else
         {
-            // const token = jwt.sign({id: result[0].id}, process.env.JWT_SECRET,
-            //     {
-            //         expiresIn: process.env.JWT_EXPIRES
-            //     });
-            // const cookieOption =
-            // {
-            //     expiresIn: new Date(Date.now() + this.process.env.COOKIE_EXPIRES),
-            //     httpOnly: true
-            // }
-            // res.cookie("userLoggedIn",token,cookieOption);
+            const token = jwt.sign({id: human[0].id}, process.env.JWT_SECRET,
+                {
+                    expiresIn: process.env.JWT_EXPIRES
+                });
+            const cookieOption =
+            {
+                expiresIn: new Date(Date.now() + this.process.env.COOKIE_EXPIRES),
+                httpOnly: true,
+                secure:true
+            }
+            res.cookie("userLoggedIn",token,cookieOption);
             return res.status(201).json({status:true,success:"User has been logged in"});
         }
     })
