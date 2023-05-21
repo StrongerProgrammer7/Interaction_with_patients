@@ -76,19 +76,19 @@ The scientific novelty of the work lies in the fact that a new approach to the i
 </div>
 <div>
 <h3 align="center"> View Prototype </h3>
-<p align="center"> MAIN PAGE </p>
+<p align="left"> MAIN PAGE </p>
 <video src='' width=100px autoplay></video>
-<p align="center"> Profile Patient </p>
+ <p align="left"> <strong>Profile Patient</strong> </p>
 <p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/8ff4a370-8ff6-4f18-b2b3-7d7886f2d3f8"></p>
-<p align="center"> Profile Doctor</p>
+ <p align="left"> <strong>Profile Doctor</strong></p>
 <p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/9c1bab92-ec48-49be-8b2c-723ab1500361"></p>
-<p align="center"> Register Form </p>
+ <p align="left"> <strong>Register Form</strong> </p>
 <p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/db3c2fdf-98e2-4d27-89cd-6390d2bf84ad"></p>
-<p align="center"> Register Form for doctor</p>
-<p align="center"><img src=""></p>
-<p align="center"> Exists access (Patient) </p>
+ <p align="left"> <strong>Register Form for doctor</strong></p>
+<p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/f7aea385-811d-4896-94cc-29f05a08dd60"></p>
+ <p align="left"> <strong>Exists access (Patient)</strong> </p>
 <p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/a9731d90-d889-4a13-a150-8de00cfabce6"></p>
-<p align="center"> Exists access (Doctor) </p>
+ <p align="left"> <strong>Exists access (Doctor)</strong> </p>
 <p align="center"><img src="https://github.com/StrongerProgrammer7/Interaction_with_patients/assets/71569051/27290612-23c5-4dc0-a13b-110f11e2fce1"></p>
 </div>
 <h4> Author: Abdyukov Z.M. </h4>
